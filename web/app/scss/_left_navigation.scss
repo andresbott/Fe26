@@ -1,0 +1,65 @@
+.fe26-left-navigation{
+    padding: 0 0 3rem 0;
+    background: #2f3b3d;
+    color: white;
+    overflow-y: auto;
+    height: auto;
+
+    li>a {
+        padding: 1rem;
+        color: $text-color-left;
+        width: 100%;
+        display: block;
+    }
+
+    a{
+        color: $text-color-left;
+    }
+
+    a:hover{
+        text-decoration: none;
+    }
+
+    li>a:hover{
+        background: #3e4f51;
+        color: #ffffff;
+        text-decoration: none;
+    }
+    span{
+        margin-right: 1.5rem;
+        margin-left: 1rem;
+    }
+
+    .glyphicon{
+        color: #e6e6e6;
+    }
+}
+
+@media (min-width: $media-min-width) {
+    .fe26-left-navigation {
+        height: 100%;
+        padding: 0;
+        li>a{
+            padding: 0.3rem 1rem;
+        }
+    }
+}
+
+.fe26-button{
+    cursor: pointer;
+    margin-left: 1rem;
+    display: inline;
+    background: white;
+    color: gray;
+    padding: 0.5rem;
+    transition: 0.15s;
+
+    .glyphicon{
+        padding-right: 0.5rem;
+    }
+    :hover{
+        color: #4e4e4e;
+    }
+}
+
+

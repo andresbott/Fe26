@@ -28,6 +28,7 @@ type listFileData  struct {
 	RequestBasePath string
 	RequestParentPath string
 	BreadCrumbs []Breadcrumb
+	FeBase string
 }
 
 // take a relative directory path and separate breadcrumb types
@@ -83,6 +84,8 @@ func getFilesData(directoryQueryPath string) (listFileData,error) {
 
 	data.BreadCrumbs = breadcrumbs(directoryQueryPath)
 
+	data.FeBase = Config.FeBase
+
 	return data,nil
 
 }
@@ -100,9 +103,9 @@ func ListFilesHTML(w http.ResponseWriter, r *http.Request)  {
 	log.Info("LIST: "+data.RequestUrl)
 	templates := packr.New("Templates", "../../web/templates")
 
-	s, _ := templates.FindString("view.html")
+	s, _ := templates.FindString("listFiles.html")
 	s2 ,_ := templates.FindString("head.html")
-	s3 ,_ := templates.FindString("fileupload.html")
+	//s3 ,_ := templates.FindString("fileupload.html")
 
 	tmpl,err := template.New("main").Funcs(
 		// todo externalize funcMAp
@@ -116,7 +119,7 @@ func ListFilesHTML(w http.ResponseWriter, r *http.Request)  {
 			"humanizeBytes": func (b int64) string{
 				return humanize.Bytes(uint64(b))
 			},
-		}).Funcs(sprig.FuncMap()).Parse(s+s2+s3)
+		}).Funcs(sprig.FuncMap()).Parse(s+s2)
 
 	if err != nil{
 		log.Warn(err)

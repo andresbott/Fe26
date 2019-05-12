@@ -1,0 +1,23 @@
+
+.fe26-dialog-container{
+    position: fixed;
+    z-index: 9000;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+.fe26-dialog{
+    position: relative;
+    width: 55%;
+    margin: auto;
+    margin-top: 2rem;
+    padding: 1.2rem;
+    border: 1px solid #b1b1b1;
+    color: #4e4e4e;
+}
+
+.fe26-dialog.fe26-dialog-info{
+    color: #383d41;
+    background-color: #e2e3e5;
+    border-color: #d6d8db;
+}

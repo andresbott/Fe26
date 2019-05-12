@@ -4,7 +4,8 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"strconv"
-	"log"
+	log "github.com/sirupsen/logrus"
+	"github.com/gobuffalo/packr/v2"
 )
 
 func fe26Router()  {
@@ -15,9 +16,9 @@ func fe26Router()  {
 	r.HandleFunc("/"+Config.FeBase+".json", ListFilesJson).Methods("GET")
 
 
-	//staticFiles := packr.New("static", "./UI/static")
-	//r.PathPrefix("/static.file").Handler(http.StripPrefix("/static.file", http.FileServer( staticFiles ) )).Methods("GET")
-	//
+	staticFiles := packr.New("static", "../../web/static")
+	r.PathPrefix("/static.file").Handler(http.StripPrefix("/static.file", http.FileServer( staticFiles ) )).Methods("GET")
+
 	////r.HandleFunc("/{filePath:.*}", serveFile)
 	//fileServer := http.FileServer(FileSystem{http.Dir(os.Getenv("FE26_ROOT"))})
 	//
