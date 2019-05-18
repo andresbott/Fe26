@@ -62,48 +62,52 @@
 
 .fe26-col-icon{
     /*padding-left: 2rem;*/
-    width: 4.5rem;
-}
+
+    .fe26-file-icon{
+        color: #ffffff;
+        background: #a59f99;
 
 
-.fe26-col-icon .fe26-file-icon{
-    color: #ffffff;
-    background: #a59f99;
+        margin: 0.5rem;
 
+        $fe26-col-icon-size: 3rem;
+        width: $fe26-col-icon-size;
+        height: $fe26-col-icon-size;
+        line-height: $fe26-col-icon-size;
 
-    margin: 0.5rem;
-
-    $fe26-col-icon-size: 3rem;
-    width: $fe26-col-icon-size;
-    height: $fe26-col-icon-size;
-    line-height: $fe26-col-icon-size;
-
-    border-radius: 0.2rem;
-    //border-radius: 5rem;
-    text-align: center;
+        border-radius: 0.2rem;
+        //border-radius: 5rem;
+        text-align: center;
 
 
 
-    &.fe26-file-image{
-        background: #459a6d;
+        &.fe26-file-image{
+            background: #459a6d;
 
-    }
-    &.fe26-file-pdf{
-        background: #c73737;
-    }
-    &.fe26-file-zip{
-        background: #c79837;
-    }
-    &.fe26-file-text{
-        background: #3795c7;
-    }
-    &.fe26-file-exe{
-        background: #565b77;
+        }
+        &.fe26-file-pdf{
+            background: #c73737;
+        }
+        &.fe26-file-zip{
+            background: #c79837;
+        }
+        &.fe26-file-text{
+            background: #3795c7;
+        }
+        &.fe26-file-exe{
+            background: #565b77;
+        }
     }
 }
-
-
-
+.fe26-col-icon,.fe26-col-size,.fe26-col-modtime,.fe26-col-actions{
+    width: auto;
+    white-space: nowrap;
+}
+.fe26-col-name{
+    width: 80%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
 
 .fe26-col-size{
     text-align: right;
@@ -112,9 +116,11 @@
 
 .fe26-col-modtime{
     text-align: center;
+
 }
 
 .fe26-col-actions{
+    padding-left: 2rem;
     padding-right: 1rem;
     a{
         padding: 0.3rem;
