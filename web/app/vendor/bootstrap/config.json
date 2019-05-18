@@ -384,9 +384,7 @@
   "css": [
     "type.less",
     "grid.less",
-    "glyphicons.less",
-    "breadcrumbs.less",
-    "alerts.less"
+    "breadcrumbs.less"
   ],
   "js": []
 }

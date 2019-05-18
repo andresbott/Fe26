@@ -2,7 +2,7 @@
 $(".fe26-c2c-file").each(function () {
 
     fe26Dialog({
-        infoIcon:'<div class=\"glyphicon glyphicon-ok fe26-dialog-icon\"></div>',
+        infoIcon:'<i class=\"fe26i-ok fe26-dialog-icon\"></i>',
         // timeout:5000000
     });
 

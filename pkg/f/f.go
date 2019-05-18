@@ -47,6 +47,20 @@ type FileTypeExtInfo struct {
 
 func FileTypeFromExtension(ext string) (FileTypeExtInfo) {
 
+	//ctype = mime.TypeByExtension(filepath.Ext(name))
+	//if ctype == "" {
+	//	// read a chunk to decide between utf-8 text and binary
+	//	var buf [sniffLen]byte
+	//	n, _ := io.ReadFull(content, buf[:])
+	//	ctype = DetectContentType(buf[:n])
+	//	_, err := content.Seek(0, io.SeekStart) // rewind to output whole file
+	//	if err != nil {
+	//		Error(w, "seeker can't seek", StatusInternalServerError)
+	//		return
+	//	}
+	//}
+
+
 	var r FileTypeExtInfo
 
 	switch strings.ToLower(ext) {

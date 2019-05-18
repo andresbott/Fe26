@@ -61,12 +61,45 @@
     width: 4.5rem;
 }
 
-.fe26-col-icon .glyphicon{
-    color: #e6e6e6;
-    padding: 0.8rem;
+
+.fe26-col-icon .fe26-file-icon{
+    color: #ffffff;
+    background: #a59f99;
+
+
     margin: 0.5rem;
-    background: #7f7f7f;
+
+    $fe26-col-icon-size: 3rem;
+    width: $fe26-col-icon-size;
+    height: $fe26-col-icon-size;
+    line-height: $fe26-col-icon-size;
+
+    border-radius: 0.2rem;
+    //border-radius: 5rem;
+    text-align: center;
+
+
+
+    &.fe26-file-image{
+        background: #459a6d;
+
+    }
+    &.fe26-file-pdf{
+        background: #c73737;
+    }
+    &.fe26-file-zip{
+        background: #c79837;
+    }
+    &.fe26-file-text{
+        background: #3795c7;
+    }
+    &.fe26-file-exe{
+        background: #565b77;
+    }
 }
+
+
+
 
 .fe26-col-size{
     text-align: right;

@@ -1,3 +1,6 @@
+// Import Bootstrap
+@import "../vendor/bootstrap/css/bootstrap.css";
+// import common vars
 @import 'vars';
 
 html,body{
@@ -26,3 +29,14 @@ hr.space{
 @import "fe26_modal";
 @import "fe26_dialog";
 @import "fe26_fileupload";
+
+
+// Import fontello webfont
+//
+// About:
+// * _fontello.scss contains copied code from  fontello.css
+// * the icon codes are imported
+// * you will need to copy the changed font to static folder
+
+@import "fontello";
+@import "../vendor/fontello/css/fontello-codes.css";

@@ -89,7 +89,7 @@ $.fn.fe26Modal = function(options){
             let actions = $('<div class="fe26-modal-actions"></div>');
 
             okBtn = $('<div class="fe26-modal-button fe26-button-ok">' +
-                '<span class="glyphicon glyphicon-ok" aria-hidden="true"></span><span>OK</span>' +
+                '<span class="fe26i-ok" aria-hidden="true"></span><span>Ok</span>' +
                 '</div>');
             okBtn.click(function (e) {
                 e.preventDefault();
@@ -99,7 +99,7 @@ $.fn.fe26Modal = function(options){
 
 
             cancelBtn = $('<div class="fe26-modal-button fe26-button-cancel">' +
-                '<span class="glyphicon glyphicon-remove" aria-hidden="true"></span><span>Cancel</span>' +
+                '<span class="fe26i-cancel" aria-hidden="true"></span><span>Cancel</span>' +
                 '</div>');
             cancelBtn.click(function (e) {
                 e.preventDefault();
