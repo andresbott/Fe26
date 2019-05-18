@@ -1,3 +1,6 @@
+
+$logo-size: 5rem;
+
 .fe26-logo-container{
     margin: 2rem;
     text-align: center;
@@ -8,8 +11,9 @@
     display: inline-block;
     position: relative;
     background: #a93956;
-    width: 5.5rem;
-    height: 5.5rem;
+    width: $logo-size;
+    height: $logo-size;
+    border-radius: 0.2rem
 
 }
 #fe26-logo::before,#fe26-logo::after{
@@ -22,7 +26,7 @@
     content: "Fe";
     text-align: center;
     font-weight: bold;
-    font-size: 3.2rem;
+    font-size: 3rem;
     left: 0.5rem;
     bottom: 0px;
 }

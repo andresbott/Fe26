@@ -1,7 +1,8 @@
 .fe26-left-navigation{
+    position: relative;
     padding: 0 0 3rem 0;
     background: $base-color-left;
-    color: white;
+    color: $text-color-left;
     overflow-y: auto;
     height: auto;
 
@@ -10,10 +11,6 @@
         color: $text-color-left;
         width: 100%;
         display: block;
-    }
-
-    a{
-        color: $text-color-left;
     }
 
     a:hover{
@@ -32,6 +29,25 @@
 
     .glyphicon{
         color: lighten($text-color-left,20%);
+    }
+
+    .fe26-productinfo{
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        >div{
+            font-size: 90%;
+            a{
+                font-weight: bold;
+                color: lighten($text-color-left,20%);
+                &:hover{
+                    color: $text-color-left;
+                }
+            }
+            padding: 0 2rem 2rem 2rem ;
+        }
+
+
     }
 }
 

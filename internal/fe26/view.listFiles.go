@@ -29,6 +29,8 @@ type listFileData  struct {
 	RequestParentPath string
 	BreadCrumbs []Breadcrumb
 	FeBase string
+	Fe26Version string
+	Fe26Repository string
 }
 
 // take a relative directory path and separate breadcrumb types
@@ -85,6 +87,8 @@ func getFilesData(directoryQueryPath string) (listFileData,error) {
 	data.BreadCrumbs = breadcrumbs(directoryQueryPath)
 
 	data.FeBase = Config.FeBase
+	data.Fe26Version = Fe26Version
+	data.Fe26Repository = Fe26Repository
 
 	return data,nil
 
