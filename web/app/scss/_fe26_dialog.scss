@@ -12,12 +12,18 @@
     margin: auto;
     margin-top: 2rem;
     padding: 1.2rem;
-    border: 1px solid #b1b1b1;
-    color: #4e4e4e;
+    border-radius: 0.2rem;
+    font-weight: bold;
+    border: 0;
+
+    .fe26-dialog-icon{
+        padding-right: 1rem;
+    }
+
 }
 
 .fe26-dialog.fe26-dialog-info{
-    color: #383d41;
-    background-color: #e2e3e5;
-    border-color: #d6d8db;
+    color: #ffffff;
+    background-color: $color-ok;
+
 }

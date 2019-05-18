@@ -1,4 +1,5 @@
 // TODO: https://codepen.io/matthiasmeier/pen/XmvQqG?editors=1010
+// TODO: migrate script to jquery
 
 // Inspired on https://css-tricks.com/drag-and-drop-file-uploading/
 'use strict';
@@ -15,7 +16,7 @@
 
     Array.prototype.forEach.call( forms, function( form ){
 
-        var     input		 = form.querySelector( 'input[type="file"]' ),
+    var     input		 = form.querySelector( 'input[type="file"]' ),
             label		 = form.querySelector( 'label' ),
             errorMsg	 = form.querySelector( '.box__error span' ),
             restart		 = form.querySelectorAll( '.box__restart' ),
@@ -39,6 +40,7 @@
 
         // drag&drop files if the feature is available
         if( isAdvancedUpload ){
+
             form.classList.add( 'has-advanced-upload' );
 
             [ 'drag', 'dragstart', 'dragend', 'dragover', 'dragenter', 'dragleave', 'drop' ].forEach( function( event ){

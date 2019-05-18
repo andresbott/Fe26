@@ -43,7 +43,7 @@ gulp.task('clean', function () {
 gulp.task("watch",gulp.series(["clean","sass",'js-fe26',"html",function () {
     gulp.watch('scss/**/*.scss', gulp.series("sass"));
     gulp.watch(['js/fe26/**/*.js'], gulp.series('js-fe26'));
-    gulp.watch(['html/*.html'], gulp.series("html"));
+    gulp.watch(['html/**/*.html'], gulp.series("html"));
 }]));
 
 

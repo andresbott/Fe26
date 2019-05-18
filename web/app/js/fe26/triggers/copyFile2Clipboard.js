@@ -1,4 +1,11 @@
+// copy to clipboard
 $(".fe26-c2c-file").each(function () {
+
+    fe26Dialog({
+        infoIcon:'<div class=\"glyphicon glyphicon-ok fe26-dialog-icon\"></div>',
+        // timeout:5000000
+    });
+
     $(this).click(function (e) {
         e.preventDefault();
         let port = window.location.port;
@@ -7,6 +14,7 @@ $(".fe26-c2c-file").each(function () {
         }
         let url = window.location.protocol+"//"+window.location.hostname+port + $(this).attr("href");
         $.fn.c2c(url);
+
         fe26Dialog().info("Link copied to clipboard");
     });
 });

@@ -1,6 +1,6 @@
 .fe26-left-navigation{
     padding: 0 0 3rem 0;
-    background: #2f3b3d;
+    background: $base-color-left;
     color: white;
     overflow-y: auto;
     height: auto;
@@ -21,8 +21,8 @@
     }
 
     li>a:hover{
-        background: #3e4f51;
-        color: #ffffff;
+        background: lighten($base-color-left,10%);
+        color: lighten($text-color-left,30%);
         text-decoration: none;
     }
     span{
@@ -31,7 +31,7 @@
     }
 
     .glyphicon{
-        color: #e6e6e6;
+        color: lighten($text-color-left,20%);
     }
 }
 

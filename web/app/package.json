@@ -2,7 +2,7 @@
   "name": "fe26",
   "version": "1.0.0",
   "description": "fe26ui",
-  "main": "index.js",
+  "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -15,9 +15,7 @@
     "gulp-concat": "^2.6.1",
     "gulp-file-include": "^2.0.1",
     "gulp-minify": "^3.1.0",
-    "gulp-sass": "^4.0.2"
-  },
-  "dependencies": {
+    "gulp-sass": "^4.0.2",
     "gulp-htmlmin": "^5.0.1"
   }
 }
