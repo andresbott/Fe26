@@ -7,6 +7,8 @@ import (
 	log "github.com/sirupsen/logrus"
 	"github.com/gobuffalo/packr/v2"
 	"os"
+	"strings"
+	"path"
 )
 
 
@@ -24,6 +26,52 @@ func localRedirect(w http.ResponseWriter, r *http.Request, newPath string) {
 func redirectToView(w http.ResponseWriter, r *http.Request) {
 	localRedirect(w,r,Config.FeBase)
 }
+
+func isJsonRequest( r *http.Request) bool {
+	return strings.HasSuffix(path.Base(r.URL.Path), "json")
+}
+
+func handlePost(w http.ResponseWriter, r *http.Request) {
+
+	log.Debug("POST[Content-Type] = "+r.Header.Get("Content-Type"))
+
+	if strings.HasPrefix(r.Header.Get("Content-Type"), "multipart/form-data"){
+		if err := r.ParseMultipartForm(32 << 20); err != nil {
+			log.Error(err)
+			http.Error(w, ServerError, http.StatusInternalServerError)
+			return
+		}
+
+		action := r.FormValue("action")
+		if action == "upload" {
+			doFileUpload(w,r)
+		}else {
+			log.Error("Wrong action: "+action)
+			http.Error(w, ServerBadRequest, http.StatusBadRequest)
+			return
+		}
+	}
+
+	// handle file delete
+	//curl -d "action=delete&path=/" -X POST http://localhost:8080/fe26 -v
+	if strings.HasPrefix(r.Header.Get("Content-Type"), "application/x-www-form-urlencoded"){
+		if err := r.ParseForm(); err != nil {
+			log.Error(err)
+			return
+		}
+		action := r.FormValue("action")
+		if action == "delete-file" {
+			doFileDelete(w,r)
+		}else if action == "create-dir"{
+			doCrateDir(w,r)
+		}else {
+			log.Error("Wrong action: "+action)
+			http.Error(w, ServerBadRequest, http.StatusBadRequest)
+			return
+		}
+	}
+}
+
 
 
 func fe26Router()  {
@@ -44,12 +92,9 @@ func fe26Router()  {
 	// Handle static files that exist
 	r.Handle("/{filePath:.*}", http.FileServer( Fe26Dir(os.Getenv("FE26_ROOT") ) ) ).Methods("GET")
 
-
-
-
 	// Handle Post requests
 	//r.HandleFunc("/"+config.FeBase, handlePost).Methods("POST")
-	//r.HandleFunc("/"+config.FeBase+".json", handlePost).Methods("POST")
+	r.HandleFunc("/"+Config.FeBase+".json", handlePost).Methods("POST")
 
 	http.Handle("/", r)
 
