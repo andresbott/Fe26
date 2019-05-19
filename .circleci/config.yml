@@ -23,7 +23,9 @@ jobs:
 
       # specify any bash command here prefixed with `run: `
       - run: go get -v -t -d ./...
-      - run: go get -u -v github.com/go-task/task/cmd/task
+      - run: go get -u -v github.com/go-task/task/cmd/task # needed to run the build task
+      - run: go get -u github.com/gobuffalo/packr/v2/packr2 # needed to run packr2
+      - run: go get github.com/konsorten/go-windows-terminal-sequences # dependency not resolven on linux, needed wor windows build
       - run: go test -v ./...
       - run: task clean
       - run: task build
