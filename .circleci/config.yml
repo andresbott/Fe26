@@ -56,9 +56,7 @@ jobs:
       - attach_workspace:
          at: ./
       - run: find
-      - run: stat ./out/fe26-linux-amd64
-      - run: cp ./out/fe26-linux-amd64 ./
-      - run: pwd
+      - run: sudo cp ./out/fe26-linux-amd64 ./usr/local/bin
       - run:
           name: "Publish Release on GitHub"
           command: |
