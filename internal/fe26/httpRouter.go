@@ -6,7 +6,6 @@ import (
 	"strconv"
 	log "github.com/sirupsen/logrus"
 	"github.com/gobuffalo/packr/v2"
-	"os"
 	"strings"
 	"path"
 )
@@ -90,7 +89,7 @@ func fe26Router()  {
 	r.HandleFunc("/", redirectToView ).Methods("GET")
 
 	// Handle static files that exist
-	r.Handle("/{filePath:.*}", http.FileServer( Fe26Dir(os.Getenv("FE26_ROOT") ) ) ).Methods("GET")
+	r.Handle("/{filePath:.*}", http.FileServer( Fe26Dir(Config.docRoot ) ) ).Methods("GET")
 
 	// Handle Post requests
 	//r.HandleFunc("/"+config.FeBase, handlePost).Methods("POST")

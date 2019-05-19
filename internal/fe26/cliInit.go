@@ -13,6 +13,7 @@ import (
 func preStartChecks () {
 
 	// Read Cli Parameters
+	cliDocRoot := flag.String("root", "", "set the document root (ENV: FE26_ROOT) ")
 	cliLogLevel := flag.String("loglevel", "info", "set the log level [debug|info|warn|error] (ENV: FE26_LOGLEVEL) ")
 	cliPort := flag.Int("port", Config.port, "what port to listen to (ENV: FE26_PORT)")
 	boolPtr := flag.Bool("v", false, "print fe26 version")
@@ -23,12 +24,8 @@ func preStartChecks () {
 		os.Exit(0)
 	}
 
-	cliDocRoot := ""
-	if len(flag.Args()) > 0{
-		cliDocRoot = flag.Args()[0]
-	}
 
-	setDocumentRoot(cliDocRoot)
+	setDocumentRoot(*cliDocRoot)
 	setPort(*cliPort)
 	setLogLevel(*cliLogLevel)
 
