@@ -39,7 +39,7 @@ tasks:
 
 #   ## Builds
 #   ================================
-  buildlinux:
+  build-linux:
       deps: [createpackr2,buildUi]
       cmds:
         - mkdir -p {{.OUTPUT}}
