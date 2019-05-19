@@ -8,7 +8,7 @@ import (
 	"strings"
 	"io/ioutil"
 	"errors"
-	f "github.com/AndresBott/f"
+	f "github.com/AndresBott/Fe26/pkg/f"
 )
 
 type File struct {
