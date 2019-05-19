@@ -56,7 +56,7 @@ jobs:
       - attach_workspace:
          at: ./
       - run: find
-      - run: cp /out/fe26-linux-amd64 ./
+      - run: cp ./out/fe26-linux-amd64 ./
       - run: find
       - run: ls -l
       - run: chmod +x fe26-linux-amd64
