@@ -35,6 +35,7 @@ jobs:
       - run: task clean
       - run: task test
       - run: task build
+      - run: ./out/fe26-linux-amd64 -v
       - persist_to_workspace:
           root: ./
           paths:
