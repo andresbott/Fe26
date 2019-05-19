@@ -56,10 +56,13 @@ jobs:
       - attach_workspace:
          at: ./
       - run: find
+      - run: stat ./out/fe26-linux-amd64
+      - run: cp ./out/fe26-linux-amd64 ./
+      - run: pwd
       - run:
           name: "Publish Release on GitHub"
           command: |
-            VERSION=$(./out/fe26-linux-amd64 -v)
+            VERSION=$(fe26-linux-amd64 -v)
             echo "ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./out/"
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./out/
 
@@ -71,7 +74,7 @@ workflows:
     jobs:
       - build:
           filters:
-            branches:
+            branches:K
               only: master
 
       - release:
