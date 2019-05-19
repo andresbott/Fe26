@@ -59,8 +59,10 @@ jobs:
       - run: find
       - run: ls -l
       - run: echo "$PATH"
-      - run: chmod +x /root/project/out/fe26-linux-amd64
-      - run: cp /root/project/out/fe26-linux-amd64 /usr/local/bin/
+      - run: id
+      - run: pwd
+      - run: sudo chmod +x /root/project/out/fe26-linux-amd64
+      - run: sudo cp /root/project/out/fe26-linux-amd64 /usr/local/bin/
       - run: fe26-linux-amd64 -v
       - run: go get github.com/tcnksm/ghr
       - run:
