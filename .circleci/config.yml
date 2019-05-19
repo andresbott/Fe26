@@ -54,3 +54,12 @@ jobs:
 #      - run: git config user.email "circleci@andresbott.com"
 #      - run: git config user.name "CircleCI"
 
+workflows:
+  version: 2
+  build:
+    jobs:
+      - build:
+
+      - release:
+          requires:
+            - build
