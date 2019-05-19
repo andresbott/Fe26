@@ -27,5 +27,11 @@ jobs:
       - run: go get -u github.com/gobuffalo/packr/v2/packr2 # needed to run packr2
       - run: go get github.com/konsorten/go-windows-terminal-sequences # dependency not resolven on linux, needed wor windows build
       - run: go test -v ./...
+
+      - run: sudo apt-get install nodejs
+      - run: npm install gulp-cli
+
+
+
       - run: task clean
       - run: task build
