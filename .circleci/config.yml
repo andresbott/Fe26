@@ -35,8 +35,9 @@ jobs:
       - run: node -v
       - run: npm -v
 
-
-      - run: npm install gulp-cli
+      ## take care of npm dependencies
+      - run: npm install -g gulp-cli
+      - run: cd web/app/ && npm install
 
 
 
