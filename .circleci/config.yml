@@ -3,23 +3,17 @@
 # Check https://circleci.com/docs/2.0/language-go/ for more details
 version: 2
 jobs:
+
   build:
     docker:
       # specify the version
       - image: circleci/golang:1.10.8
 
-      # Specify service dependencies here if necessary
-      # CircleCI maintains a library of pre-built images
-      # documented at https://circleci.com/docs/2.0/circleci-images/
-      # - image: circleci/postgres:9.4
-
-    #### TEMPLATE_NOTE: go expects specific checkout path representing url
-    #### expecting it in the form of
-    ####   /go/src/github.com/circleci/go-tool
-    ####   /go/src/bitbucket.org/circleci/go-tool
     working_directory: /go/src/github.com/AndresBott/Fe26
     steps:
       - checkout
+      - attach_workspace:
+          at: ./out
 
       # specify any bash command here prefixed with `run: `
       - run: go get -v -t -d ./...
@@ -39,7 +33,24 @@ jobs:
       - run: sudo npm install -g gulp-cli
       - run: cd web/app/ && npm install
 
-
-
       - run: task clean
+      - run: task test
       - run: task build
+
+  release:
+    docker:
+      - image: cibuilds/github:0.10
+
+    steps:
+      - attach_workspace:
+         at: ./out
+      - add_ssh_keys:
+          # use custom write ssh key
+          fingerprints:
+            - "db:19:93:65:46:da:81:cb:99:0b:7d:e2:9a:99:c9:c5"
+      - run: ls
+      - run: fund
+#      ## push changes
+#      - run: git config user.email "circleci@andresbott.com"
+#      - run: git config user.name "CircleCI"
+

@@ -36,7 +36,7 @@ tasks:
 
   build:
     desc: Build binaries
-    deps: [createpackr2,buildUi]
+    deps: [increaseversion,createpackr2,buildUi]
     cmds:
       - mkdir -p {{.OUTPUT}}
       - GOOS=darwin GOARCH=amd64 go build -o {{.OUTPUT}}/fe26-darwin-amd64 cmd/fe26/*.go
@@ -61,3 +61,12 @@ tasks:
     desc: Run all the go tests.
     cmds:
       - go test -race ./...
+
+  increaseversion:
+    cmds:
+      - sed  -i '/Fe26Version/s/[^.]*$/'"{{.BUILD_NUMBER}}\"/" internal/fe26/constants.go
+      - echo "Next build version= {{.BUILD_NUMBER}} "
+    silent: true
+    vars:
+      BUILD_NUMBER:
+        sh: cat internal/fe26/constants.go | grep "Fe26Version" | grep -Po "([0-9]+)" | tail -1 | awk '/[0-9]/ { print 1+$1 }'

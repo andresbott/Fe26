@@ -5,6 +5,6 @@ const (
 	ServerBadRequest  = "Bad Request"
 	ServerNotFound  = "Not Found"
 	StatusMovedPermanently  = 301 // RFC 7231, 6.4.2
-	Fe26Version = "1.0.0"
+	Fe26Version = "1.0.1"
 	Fe26Repository = "https://github.com/AndresBott/Fe26"
 )
