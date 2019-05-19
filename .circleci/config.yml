@@ -55,6 +55,7 @@ jobs:
     steps:
       - attach_workspace:
          at: ./
+      - checkout
       - run: find
       - run: cp ./out/fe26-linux-amd64 ./
       - run: find
