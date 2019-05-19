@@ -37,3 +37,8 @@ and then:
 ## go binary
 
     go get -u -v github.com/go-task/task/cmd/task
+    task build
+    
+## circleCI
+
+circleCI will create a new release for every pushed code for witch the build does not fail

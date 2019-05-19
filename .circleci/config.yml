@@ -39,16 +39,24 @@ jobs:
 
       - run: task clean
       - run: task test
-      - run: task build-release
-      - run: ./out/fe26-linux-amd64 -v
+      - run: task increaseversion
+      - run: task build
 
       ## push the last commit to master
+      - run: git add internal/fe26/constants.go
+      - run:
+          name: "Commit release version change"
+          command: |
+            VERSION=$(./out/fe26-linux-amd64 -v)
+            git commit -m "[GO TASK][ci skip] Upgrade build to ${VERSION}'"
+
       - run: git push
+
+      ## persist the binaries
       - persist_to_workspace:
           root: ./
           paths:
             - out/*
-
 
   release:
     docker:

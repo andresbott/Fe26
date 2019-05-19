@@ -60,11 +60,6 @@ tasks:
       - GOOS=linux GOARCH=amd64 go build -o {{.OUTPUT}}/fe26-linux-amd64 cmd/fe26/*.go
       - GOOS=windows GOARCH=amd64 go build -o {{.OUTPUT}}/fe26-windows-amd64 cmd/fe26/*.go
 
-  build-release:
-      desc: Build binaries and commit new versions to code for release
-      deps: [build,increaseversion]
-
-
   clean:
     desc: Clean the build stage
     deps: [cleanpackr2,cleanUI]
@@ -80,13 +75,13 @@ tasks:
   increaseversion:
     cmds:
       - sed  -i '/Fe26Version/s/[^.]*$/'"{{.BUILD_NUMBER}}\"/" internal/fe26/constants.go
-      - echo "Next build version {{.FULL_VERSION}}"
-      - git add internal/fe26/constants.go
-      - git commit -m "[GO TASK] Upgrade build string to {{.FULL_VERSION}}"
+      - echo 'Next release {{.P_VERSION}}.{{.BUILD_NUMBER}}'
+#      - git add internal/fe26/constants.go
+#      - git commit -m "[GO TASK] Upgrade build string to {{.FULL_VERSION}}"
     silent: true
     vars:
       BUILD_NUMBER:
         sh: cat internal/fe26/constants.go | grep "Fe26Version" | grep -Po "([0-9]+)" | tail -1 | awk '/[0-9]/ { print 1+$1 }'
-      FULL_VERSION:
-        sh: cat internal/fe26/constants.go | grep "Fe26Version" | grep -Po "([0-9]+.[0-9]+.[0-9]+)"
+      P_VERSION:
+        sh: cat internal/fe26/constants.go | grep "Fe26Version" | grep -Po "([0-9]+.[0-9]+.[0-9]+)" | awk '{split($0,a,"."); d=sprintf("%s.%s", a[1],a[2])} END {print d}'
 
