@@ -50,19 +50,18 @@ jobs:
 
   release:
     docker:
-      - image: cibuilds/github:0.10
+      - image: cibuilds/github:0.12
 
     steps:
       - attach_workspace:
-         at: ./out
+         at: ./
       - run: find
       - run:
           name: "Publish Release on GitHub"
           command: |
-            go get github.com/tcnksm/ghr
-            VERSION=./out/$(fe26-linux-amd64 -v)
+            VERSION=$(./out/fe26-linux-amd64 -v)
             echo "ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./out/"
-#            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./out/
 
 
 
