@@ -59,7 +59,13 @@ workflows:
   build:
     jobs:
       - build:
+          filters:
+            branches:
+              only: master
 
       - release:
           requires:
             - build
+          filters:
+            branches:
+              only: master
