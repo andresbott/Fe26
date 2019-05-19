@@ -97,7 +97,7 @@ func fe26Router()  {
 
 	http.Handle("/", r)
 
-	if err := http.ListenAndServe(":"+strconv.Itoa(Config.port), nil); err != nil {
+	if err := http.ListenAndServe(Config.ip+":"+strconv.Itoa(Config.port), nil); err != nil {
 		log.Fatal(err)
 	}
 

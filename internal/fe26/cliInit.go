@@ -15,6 +15,7 @@ func preStartChecks () {
 	// Read Cli Parameters
 	cliDocRoot := flag.String("root", "", "set the document root (ENV: FE26_ROOT) ")
 	cliLogLevel := flag.String("loglevel", "info", "set the log level [debug|info|warn|error] (ENV: FE26_LOGLEVEL) ")
+	cliIp := flag.String("ip", Config.ip, "what IP to listen to, use '0.0.0.0' for all (ENV: FE26_IP)")
 	cliPort := flag.Int("port", Config.port, "what port to listen to (ENV: FE26_PORT)")
 	boolPtr := flag.Bool("v", false, "print fe26 version")
 	flag.Parse()
@@ -27,14 +28,28 @@ func preStartChecks () {
 
 	setDocumentRoot(*cliDocRoot)
 	setPort(*cliPort)
+	setIp(*cliIp)
 	setLogLevel(*cliLogLevel)
 
 	log.Info("Starting FE26")
 	log.Info("{" +
 		"root: \""+Config.docRoot+"\", " +
+		"ip: "+Config.ip+", " +
 		"port: "+strconv.Itoa(Config.port)+", " +
 		"log-level: \""+log.GetLevel().String()+"\", " +
 		"}")
+
+}
+
+func setIp(cliIpt string){
+	envIp := os.Getenv("FE26_IP")
+	ip := ""
+	if envIp != ""{
+		ip = envIp
+	}else if cliIpt != ""{
+		ip = cliIpt
+	}
+	Config.ip = ip
 
 }
 
