@@ -34,7 +34,7 @@ jobs:
 
       - run: task clean
       - run: task test
-      - run: task build
+      - run: task build-release
       - run: ./out/fe26-linux-amd64 -v
       - persist_to_workspace:
           root: ./
@@ -42,12 +42,12 @@ jobs:
             - out/*
 
 #      ## todo: push changes to git
-#      - add_ssh_keys:
-#          # use custom write ssh key
-#          fingerprints:
-#            - "db:19:93:65:46:da:81:cb:99:0b:7d:e2:9a:99:c9:c5"
-#      - run: git config user.email "circleci@andresbott.com"
-#      - run: git config user.name "CircleCI"
+      - add_ssh_keys:
+          # use custom write ssh key
+          fingerprints:
+            - "db:19:93:65:46:da:81:cb:99:0b:7d:e2:9a:99:c9:c5"
+      - run: git config user.email "circleci@andresbott.com"
+      - run: git config user.name "CircleCI"
 
   release:
     docker:
