@@ -40,10 +40,16 @@ gulp.task('clean', function () {
         .pipe(clean({force: true}));
 });
 
+
+gulp.task('build', gulp.series(["clean","sass",'js-fe26',"html"]));
+
 gulp.task("watch",gulp.series(["clean","sass",'js-fe26',"html",function () {
     gulp.watch('scss/**/*.scss', gulp.series("sass"));
     gulp.watch(['js/fe26/**/*.js'], gulp.series('js-fe26'));
     gulp.watch(['html/**/*.html'], gulp.series("html"));
 }]));
+
+
+
 
 

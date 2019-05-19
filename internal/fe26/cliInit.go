@@ -6,20 +6,23 @@ import (
 	log "github.com/sirupsen/logrus"
 	"flag"
 	"github.com/AndresBott/Fe26/pkg/f"
+	"fmt"
 )
 
 
 func preStartChecks () {
 
-	//flag.Usage = func() {
-	//	fmt.Println("help")
-	//	os.Exit(0)
-	//}
-
 	// Read Cli Parameters
 	cliLogLevel := flag.String("loglevel", "info", "set the log level [debug|info|warn|error] (ENV: FE26_LOGLEVEL) ")
 	cliPort := flag.Int("port", Config.port, "what port to listen to (ENV: FE26_PORT)")
+	boolPtr := flag.Bool("v", false, "print fe26 version")
 	flag.Parse()
+
+	if *boolPtr {
+		fmt.Println(Fe26Version)
+		os.Exit(0)
+	}
+
 	cliDocRoot := ""
 	if len(flag.Args()) > 0{
 		cliDocRoot = flag.Args()[0]
