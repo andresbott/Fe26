@@ -59,6 +59,8 @@ jobs:
       - run: cp ./out/fe26-linux-amd64 ./
       - run: find
       - run: ls -l
+      - run: echo "$PATH"
+      - run: cd ./out && fe26-linux-amd64 -v
       - run: chmod +x fe26-linux-amd64
       - run: ./fe26-linux-amd64 -v
       - run:
@@ -85,3 +87,4 @@ workflows:
           filters:
             branches:
               only: master
+
