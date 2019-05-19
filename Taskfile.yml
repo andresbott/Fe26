@@ -66,6 +66,8 @@ tasks:
     cmds:
       - sed  -i '/Fe26Version/s/[^.]*$/'"{{.BUILD_NUMBER}}\"/" internal/fe26/constants.go
       - echo "Next build version= {{.BUILD_NUMBER}} "
+#      - git add internal/fe26/constants.go
+#      - git commit -m "[GO TASK] Upgrade build string to {{.BUILD_NUMBER}}
     silent: true
     vars:
       BUILD_NUMBER:

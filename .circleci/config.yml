@@ -37,6 +37,14 @@ jobs:
       - run: task test
       - run: task build
 
+#      ## todo: push changes to git
+#      - add_ssh_keys:
+#          # use custom write ssh key
+#          fingerprints:
+#            - "db:19:93:65:46:da:81:cb:99:0b:7d:e2:9a:99:c9:c5"
+#      - run: git config user.email "circleci@andresbott.com"
+#      - run: git config user.name "CircleCI"
+
   release:
     docker:
       - image: cibuilds/github:0.10
@@ -44,15 +52,16 @@ jobs:
     steps:
       - attach_workspace:
          at: ./out
-      - add_ssh_keys:
-          # use custom write ssh key
-          fingerprints:
-            - "db:19:93:65:46:da:81:cb:99:0b:7d:e2:9a:99:c9:c5"
-      - run: ls
-      - run: fund
-#      ## push changes
-#      - run: git config user.email "circleci@andresbott.com"
-#      - run: git config user.name "CircleCI"
+      - run: find
+      - run:
+          name: "Publish Release on GitHub"
+          command: |
+            go get github.com/tcnksm/ghr
+            VERSION=./out/$(fe26-linux-amd64 -v)
+            echo "ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./out/"
+#            ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./artifacts/
+
+
 
 workflows:
   version: 2
