@@ -59,11 +59,12 @@ jobs:
       - run: ls -l
       - run: echo "$PATH"
       - run: chmod +x /root/project/out/fe26-linux-amd64
-      - run: /root/project/out/fe26-linux-amd64 -v
+      - run: cp /root/project/out/fe26-linux-amd64 /usr/local/bin/
+      - run: fe26-linux-amd64 -v
       - run:
           name: "Publish Release on GitHub"
           command: |
-            VERSION=$(/root/project/out/fe26-linux-amd64 -v)
+            VERSION=$(fe26-linux-amd64 -v)
             echo "ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./out/"
             ghr -t ${GITHUB_TOKEN} -u ${CIRCLE_PROJECT_USERNAME} -r ${CIRCLE_PROJECT_REPONAME} -c ${CIRCLE_SHA1} -delete ${VERSION} ./out/
 
