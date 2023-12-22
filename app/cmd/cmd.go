@@ -24,7 +24,13 @@ func rootCmd() *cobra.Command {
 		},
 	}
 	cmd.PersistentFlags().StringVar(&pers, "pers", "", "persistent flag")
-	cmd.AddCommand(newSubCmd())
+
+	versCdm := versionCmd()
+	cmd.AddCommand(
+		subCmd(),
+		versCdm,
+	)
+
 	return &cmd
 }
 
@@ -39,6 +45,27 @@ func subCmd() *cobra.Command {
 			fmt.Println(per)
 		},
 	}
+	return &cmd
+}
+
+func versionCmd() *cobra.Command {
+	cmd := cobra.Command{
+		Use:   "version",
+		Short: "version ",
+		Long:  `version long`,
+		Run: func(cmd *cobra.Command, args []string) {
+			// Do Stuff Here
+			//per, _ := cmd.Flags().GetString("pers")
+			//fmt.Println(per)
+			fmt.Println("version information goes here")
+		},
+	}
+
+	// hide persistent flag on this command
+	cmd.SetHelpFunc(func(command *cobra.Command, strings []string) {
+		_ = command.Flags().MarkHidden("pers")
+		command.Parent().HelpFunc()(command, strings)
+	})
 
 	return &cmd
 }

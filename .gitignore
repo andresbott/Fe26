@@ -7,6 +7,9 @@ node_modules/
 # linux related
 .directory
 
+# project
+_old
+_webui
 
 # User-specific stuff:
 .idea/
