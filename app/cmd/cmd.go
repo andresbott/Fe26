@@ -25,26 +25,11 @@ func rootCmd() *cobra.Command {
 	}
 	cmd.PersistentFlags().StringVar(&pers, "pers", "", "persistent flag")
 
-	versCdm := versionCmd()
 	cmd.AddCommand(
-		subCmd(),
-		versCdm,
+		versionCmd(),
+		Server(),
 	)
 
-	return &cmd
-}
-
-func subCmd() *cobra.Command {
-	cmd := cobra.Command{
-		Use:   "sub",
-		Short: "Todo",
-		Long:  `Also to do`,
-		Run: func(cmd *cobra.Command, args []string) {
-			// Do Stuff Here
-			per, _ := cmd.Flags().GetString("pers")
-			fmt.Println(per)
-		},
-	}
 	return &cmd
 }
 
