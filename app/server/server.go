@@ -4,8 +4,10 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/andresbott/Fe26/app/server/handlers/fe26"
+	"github.com/andresbott/Fe26/internal/httpjson"
 	"github.com/rs/zerolog"
+	"github.com/spf13/afero"
+
 	"io"
 	"net"
 	"net/http"
@@ -33,17 +35,25 @@ func NewServer(cfg Cfg) *Server {
 		l := zerolog.New(io.Discard)
 		cfg.Logger = &l
 	}
+	//
+	//fe26Hndl, err := fe26.New(cfg.Logger, cfg.Root)
+	//_ = fe26Hndl
+	//if err != nil {
+	//	panic("unable to crate Server")
+	//}
 
-	fe26Hndl, err := fe26.New(cfg.Logger, cfg.Root)
-	if err != nil {
-		panic("unable to crate Server")
-	}
+	var AppFs = afero.NewOsFs()
+	httpFs := afero.NewHttpFs(AppFs)
+	fileserver := httpjson.FileServer(httpFs.Dir("./"))
+
+	mux := http.NewServeMux()
+	mux.Handle("/api/v0/fs/", http.StripPrefix("/api/v0/fs/", fileserver))
 
 	return &Server{
 		logger: cfg.Logger,
 		server: &http.Server{
 			Addr:    cfg.Addr,
-			Handler: fe26Hndl,
+			Handler: mux,
 		},
 	}
 }

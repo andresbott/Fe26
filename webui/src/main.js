@@ -12,6 +12,7 @@ import { aliases, fa } from 'vuetify/iconsets/fa'
 import App from './App.vue';
 
 import 'primeflex/primeflex.css'
+import "primeicons/primeicons.css";
 import 'primevue/resources/themes/aura-light-green/theme.css'
 import PrimeVue from 'primevue/config';
 

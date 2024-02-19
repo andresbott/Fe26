@@ -16,46 +16,28 @@
         key: value.id.toString(),
         label: value.name,
         selectable: true,
+        icon: "pi pi-fw pi-inbox",
       });
     }
-    console.log(nodes)
     return nodes;
   })
+  const selectedKey = ref(null);
+  const onNodeSelect = (node) => {
+    console.log(node)
+    // toast.add({ severity: 'success', summary: 'Node Selected', detail: node.label, life: 3000 });
+  };
+
+
   onMounted(() => {
     store.fetchUsers();
   });
 </script>
 
 <template>
-    <Tree :value=getNames class="w-full">    </Tree>
+  <Tree v-model:selectionKeys="selectedKey" :value="getNames"  @nodeSelect="onNodeSelect" selectionMode="single" class="w-full md:w-30rem"></Tree>
+
+
 
 </template>
 
-
-<script>
-
-import { ref, onMounted } from 'vue';
-
-
-// import { NodeService } from '@/service/NodeService';
-
-// const nodes = ref(null);
-
-// onMounted(() => {
-//   NodeService.getTreeNodes().then((data) => (nodes.value = data));
-// });
-
-const nodes = [
-  {
-    key: "a",
-    label: "test1",
-    selectable: true,
-  },
-  {
-    key: "b",
-    label: "test2",
-  },
-]
-
-</script>
 
