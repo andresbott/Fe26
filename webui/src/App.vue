@@ -1,26 +1,23 @@
 <script setup>
-import Fe26Layout from "@/views/Fe26Layout.vue";
-import fileList from "@/views/fileList.vue";
-</script>
+import { RouterLink, RouterView } from 'vue-router'
+import PageLayout from '@/views/Fe26Layout.vue'
+import DirectoryList from "@/components/directoryList.vue";
 
+</script>
 <template>
-  <fe26-layout >
-    <template v-slot:menu>
-      <file-list></file-list>
-      <!-- content for the header slot -->
+<!--  <RouterView />-->
+  <PageLayout>
+
+    <template v-slot:header>
+      <nav>
+        <!--                <RouterLink to="/">Home</RouterLink>-->
+        <!--                <RouterLink to="/about">About</RouterLink>-->
+        <!--        Buy VS rent https://www.youtube.com/watch?v=Uwl3-jBNEd4 -->
+      </nav>
     </template>
-    <div>
-      content
-    </div>
-  </fe26-layout>
+    <template v-slot:menu>
+      <directory-list/>
+    </template>
+
+  </PageLayout>
 </template>
-
-<script>
-</script>
-
-<style>
-#app,html,body{
-  height:100%;
-  width:100%
-}
-</style>

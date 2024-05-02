@@ -1,0 +1,86 @@
+
+$upload-border: #b6b6b6;
+$upload-backgroud: #f1f1f1;
+$upload-text: #7f7f7f;
+
+.fe26-upload{
+    background-color: $upload-backgroud;
+    margin: 2rem;
+    padding: 2rem;
+    position: relative;
+    &.has-advanced-upload{
+        outline: 1px dotted $upload-border;
+        outline-offset: -0.3rem;
+
+        -webkit-transition: outline-offset .15s ease-in-out, background-color .15s linear;
+        transition: outline-offset .15s ease-in-out, background-color .15s linear;
+
+        .fe26-upload__icon {
+            font-size: 150%;
+            display: inline;
+        }
+        .fe26-upload__dragndrop {
+            display: inline;
+        }
+    }
+
+    &.is-dragover{
+        outline-offset: -1rem;
+        background-color: darken($upload-backgroud,7%);
+    }
+
+    .fe26-upload__input label{
+        width: 50%;
+        cursor: pointer;
+        display: block;
+        text-align: center;
+        margin: auto;
+        color: $upload-text;
+    }
+
+    &.is-uploading .fe26-upload__input,
+    &.is-success .fe26-upload__input,
+    &.is-error .fe26-upload__input{
+        visibility: hidden;
+    }
+    .fe26-upload__uploading,
+    .fe26-upload__success,
+    .fe26-upload__error{
+        display: none;
+    }
+
+    &.is-uploading .fe26-upload__uploading,
+    &.is-success .fe26-upload__success,
+    &.is-error .fe26-upload__error{
+        display: block;
+        text-align: center;
+        font-weight: bold;
+        -webkit-transform: translateY( -50% );
+        transform: translateY( -50% );
+        color: $upload-text;
+    }
+
+}
+
+.fe26-upload__input .fe26-upload__file,.fe26-upload__input .fe26-upload__button {
+    display: none;
+}
+
+
+
+.fe26-upload__dragndrop, .fe26-upload__icon{
+    display: none;
+}
+
+
+
+
+
+.fe26-upload__success{
+    -webkit-animation:  .25s ease-in-out;
+    animation:  .25s ease-in-out;
+}
+
+
+
+

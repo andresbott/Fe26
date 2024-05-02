@@ -8,7 +8,6 @@ node_modules/
 .directory
 
 # project
-_old
 _webui
 
 # User-specific stuff:

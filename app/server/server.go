@@ -46,8 +46,10 @@ func NewServer(cfg Cfg) *Server {
 	httpFs := afero.NewHttpFs(AppFs)
 	fileserver := httpjson.FileServer(httpFs.Dir("./"))
 
+	CORSAllowedFS := CorsMiddleware(fileserver)
+
 	mux := http.NewServeMux()
-	mux.Handle("/api/v0/fs/", http.StripPrefix("/api/v0/fs/", fileserver))
+	mux.Handle("/api/v0/fs/", http.StripPrefix("/api/v0/fs/", CORSAllowedFS))
 
 	return &Server{
 		logger: cfg.Logger,
@@ -82,4 +84,29 @@ func (srv *Server) Stop() {
 	}
 	srv.logger.Info().Msg("server stopped")
 
+}
+
+// CorsMiddleware adds CORS headers to every response.
+func CorsMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+
+		//time.Sleep(2 * time.Second)
+		// Allow requests from any origin with the "*" wildcard
+		w.Header().Set("Access-Control-Allow-Origin", "*")
+
+		// Allow common HTTP methods (GET, POST, PUT, DELETE, OPTIONS)
+		w.Header().Set("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS")
+
+		// Allow common headers
+		w.Header().Set("Access-Control-Allow-Headers", "Content-Type, Authorization")
+
+		// Handle preflight requests
+		if r.Method == "OPTIONS" {
+			w.WriteHeader(http.StatusOK)
+			return
+		}
+
+		// Call the next handler in the chain
+		next.ServeHTTP(w, r)
+	})
 }

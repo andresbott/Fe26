@@ -8,7 +8,6 @@
       <slot name="menu"></slot>
     </div>
 
-
     <div class="main">
       <slot></slot>
     </div>
@@ -23,12 +22,11 @@
 <style>
 .fe26-container {
   display: grid;
-  //grid-template-areas:
-  //  "header header header header"
-  //  "left menu content right"
-  //  "footer footer footer footer";
+  //grid-template-areas: //  "header header header header"
+    //  "left menu content right"
+    //  "footer footer footer footer";;
   //grid-template-rows: auto 1fr auto;
-  //grid-template-columns: 1fr 2fr 3fr 1fr ;
+  //grid-template-columns: 1fr 2fr 3fr 1fr;
   min-height: 100vh;
 }
 
@@ -70,48 +68,48 @@
     grid-template-rows: auto 1fr auto;
     grid-template-columns: 1fr;
   }
-  .fe26-container .menu  {
-    display:none;
+  .fe26-container .menu {
+    display: none;
   }
 }
-
 
 @media (min-width: 601px) {
   .fe26-container {
     grid-template-areas:
-    "header header "
-    "menu content "
-    "footer footer";
+      "header header "
+      "menu content "
+      "footer footer";
     grid-template-rows: auto 1fr auto;
-    grid-template-columns: 1fr 2fr ;
+    grid-template-columns: 1fr 2fr;
   }
-  .fe26-container .menu,.fe26-container .main  {
-    width: 100%
+  .fe26-container .menu,
+  .fe26-container .main {
+    width: 100%;
   }
 }
 /* add class full-with to not add borders at sizes >900px*/
 @media (min-width: 901px) {
   .fe26-container {
     grid-template-areas:
-    "header header header header"
-          "left menu content right"
-          "footer footer footer footer";
+      "header header header header"
+      "left menu content right"
+      "footer footer footer footer";
     grid-template-rows: auto 1fr auto;
     grid-template-columns: 1fr auto auto 1fr;
   }
 
   .fe26-container.full-with {
     grid-template-areas:
-    "header header "
-    "menu content "
-    "footer footer";
+      "header header "
+      "menu content "
+      "footer footer";
     grid-template-rows: auto 1fr auto;
-    grid-template-columns: 1fr 2fr ;
+    grid-template-columns: 1fr 2fr;
   }
 
   .fe26-container .menu {
     max-width: 400px;
-    min-width:250px;
+    min-width: 250px;
     margin: 0 0 0 auto;
   }
 
@@ -120,12 +118,10 @@
     min-width: 650px;
     margin: 0 auto 0 0;
   }
-  .fe26-container.full-with .menu,.fe26-container.full-with .main  {
-    width: 100%
+  .fe26-container.full-with .menu,
+  .fe26-container.full-with .main {
+    width: 100%;
   }
 }
-
-
 </style>
-<script setup>
-</script>
+<script setup></script>

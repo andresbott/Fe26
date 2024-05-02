@@ -1,0 +1,147 @@
+@media (min-width: 768px) {
+
+    .fe26-right-navigation {
+        /*overflow-y: auto;*/
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        z-index: 10;
+    }
+
+    .fe26-file-list-container {
+        flex: 1;
+        overflow-y: auto;
+        margin-bottom: 1rem;
+    }
+}
+
+.fe26-right-navigation hr.space{
+    border: 0;
+    border-bottom: 1px solid #e8e8e8;
+    margin: 3rem 2rem;
+}
+
+.fe26-file-list{
+    width: 100%;
+}
+
+.fe26-file-list thead{
+    background: none;
+    border: 0;
+}
+
+
+.fe26-file-list tbody{
+    border-bottom: 0;
+}
+
+.fe26-file-list tbody tr:nth-child(even) {
+    background: #f5f5f5;
+}
+
+.fe26-file-list tbody tr{
+    color: $text-color-right;
+    line-height: 3rem;
+}
+
+.fe26-file-list tbody tr:hover{
+    background: #e6e4e4;
+}
+
+.fe26-file-list tbody td{
+    /*padding-top: 0.5rem;*/
+    /*padding-bottom: 0.5rem;*/
+}
+.fe26-file-list tbody tr a{
+    color: $text-color-right;
+    &:hover{
+        text-decoration: none;
+        color: darken($text-color-right,20%);
+    }
+}
+
+.fe26-col-icon{
+    /*padding-left: 2rem;*/
+
+    .fe26-file-icon{
+        color: #ffffff;
+        background: #a59f99;
+
+
+        margin: 0.5rem;
+
+        $fe26-col-icon-size: 3rem;
+        width: $fe26-col-icon-size;
+        height: $fe26-col-icon-size;
+        line-height: $fe26-col-icon-size;
+
+        border-radius: 0.2rem;
+        //border-radius: 5rem;
+        text-align: center;
+
+
+
+        &.fe26-file-image{
+            background: #459a6d;
+
+        }
+        &.fe26-file-pdf{
+            background: #c73737;
+        }
+        &.fe26-file-zip{
+            background: #c79837;
+        }
+        &.fe26-file-text{
+            background: #3795c7;
+        }
+        &.fe26-file-exe{
+            background: #565b77;
+        }
+    }
+}
+.fe26-col-icon,.fe26-col-size,.fe26-col-modtime,.fe26-col-actions{
+    width: auto;
+    white-space: nowrap;
+}
+.fe26-col-name{
+    width: 80%;
+    padding-left: 1rem;
+    padding-right: 1rem;
+}
+
+.fe26-col-size{
+    text-align: right;
+    padding-right: 2rem;
+}
+
+.fe26-col-modtime{
+    text-align: center;
+
+}
+
+.fe26-col-actions{
+    padding-left: 2rem;
+    padding-right: 1rem;
+    a{
+        padding: 0.3rem;
+        margin-right: 0.2rem;
+
+        &:hover{
+            text-decoration: none;
+            color: darken($text-color-right,20%);
+        }
+    }
+}
+.fe26-col-actions span{
+    padding-right: 0.5rem;
+}
+
+.fe26-delete-file-modal-text{
+    color: gray;
+    padding: 2rem 0;
+}
+
+.fe26-delete-file-modal-text .filename{
+    font-weight: bold;
+}
+

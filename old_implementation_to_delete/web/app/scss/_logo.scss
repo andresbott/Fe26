@@ -1,0 +1,51 @@
+
+$logo-size: 5rem;
+
+.fe26-logo-container{
+    margin: 2rem;
+    text-align: center;
+}
+
+
+#fe26-logo{
+    display: inline-block;
+    position: relative;
+    background: #a93956;
+    width: $logo-size;
+    height: $logo-size;
+    border-radius: 0.2rem
+
+}
+#fe26-logo::before,#fe26-logo::after{
+    position: absolute;
+    color: #2f3b3d;
+}
+
+
+#fe26-logo::before {
+    content: "Fe";
+    text-align: center;
+    font-weight: bold;
+    font-size: 3rem;
+    left: 0.5rem;
+    bottom: 0px;
+}
+
+#fe26-logo::after {
+    content: "26";
+    font-size: 1.2rem;
+    right: 0.5rem;
+    top: 0.2rem;
+}
+
+.fe26-text-logo-fe{
+    position: absolute;
+    bottom: 0;
+    left: 0.2rem;
+    font-size: 140%;
+}
+
+.fe26-text-fe{
+    font-size: 2.5rem;
+    color: #e6e6e6;
+}
