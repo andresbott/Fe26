@@ -1,0 +1,1 @@
+import{_ as o}from"./Vertical-B0Ju9ciJ.js";import{e as s,a as r,w as e,s as c,b as t,o as _,d as a}from"./index-CLsQzkYt.js";const n=t("div",{class:"about"},[t("h1",null,"404")],-1),i={__name:"404",setup(l){return(d,m)=>(_(),s(c,null,[n,r(o,null,{header:e(()=>[a(" head ")]),footer:e(()=>[a(" footer ")]),default:e(()=>[a(" 404 ")]),_:1})],64))}};export{i as default};

@@ -1,5 +1,0 @@
-this parts are included in html files on the parent directory using https://www.npmjs.com/package/gulp-file-include
-
-I have decided to use pre processing include for part that are not reused in go templates
-
-for parts that can potentially reused by go, a separate template is generated

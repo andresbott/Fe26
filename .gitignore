@@ -1,18 +1,26 @@
-# Project
-web/static/css/*
-web/static/js/*
-# NPM
-node_modules/
+# ---> Go
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
 
-# linux related
-.directory
+# Test binary, build with `go test -c`
+*.test
 
-# project
-_webui
-
-# User-specific stuff:
-.idea/
+# IDE shenanigans
 *.iml
+.idea/
 
+# build output
+dist/
 
+# SPA
+app/spa/files/ui/*
+!app/spa/files/ui/.gitkeep
 
+# project databases
+carbon.db
+zarf/appData/session
+!zarf/appData/session/.gitkeep

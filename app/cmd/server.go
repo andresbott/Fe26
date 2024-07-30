@@ -1,50 +1,124 @@
 package cmd
 
 import (
-	"github.com/andresbott/Fe26/app/server"
+	"fmt"
+	"github.com/andresbott/Fe26/app/config"
+	"github.com/andresbott/Fe26/app/router"
+
+	"github.com/andresbott/go-carbon/libs/auth"
+	"github.com/andresbott/go-carbon/libs/http/handlers"
+	"github.com/andresbott/go-carbon/libs/http/server"
+	"github.com/andresbott/go-carbon/libs/logzero"
+	"github.com/andresbott/go-carbon/libs/user"
 	"github.com/spf13/cobra"
-	"os"
-	"os/signal"
-	"syscall"
 )
 
-func Server() *cobra.Command {
-	addr := ":8090"
-	cmd := cobra.Command{
+func serverCmd() *cobra.Command {
+	var configFile = "./config.yaml"
+	cmd := &cobra.Command{
 		Use:   "start",
-		Short: "Todo",
-		Long:  `Also to do`,
+		Short: "start a web server",
+		Long:  "start a web server demonstrating the different features of the library",
 		RunE: func(cmd *cobra.Command, args []string) error {
-
-			cfg := server.Cfg{
-				Addr:   addr,
-				Logger: nil,
-			}
-			srv := server.NewServer(cfg)
-			osSigExit(func() {
-				srv.Stop()
-			})
-			err := srv.Start()
-			if err != nil {
-				return err
-			}
-			return nil
-
+			return runServer(configFile)
 		},
 	}
-	cmd.Flags().StringVarP(&addr, "addr", "a", addr, "listen address")
-	return &cmd
+
+	cmd.Flags().StringVarP(&configFile, "config", "c", configFile, "config file")
+	return cmd
 }
 
-func osSigExit(fn func()) chan bool {
-	signalCh := make(chan os.Signal, 1)
-	stopDone := make(chan bool, 1)
-	signal.Notify(signalCh, syscall.SIGINT, syscall.SIGTERM)
-	// handle exit
-	go func() {
-		<-signalCh
-		fn()
-		stopDone <- true
-	}()
-	return stopDone
+func runServer(configFile string) error {
+
+	cfg, err := config.Get(configFile)
+	if err != nil {
+		return err
+	}
+
+	// setup the logger
+	logOutput, err := logzero.ConsoleFileOutput("")
+	if err != nil {
+		return err
+	}
+	l := logzero.DefaultLogger(logzero.GetLogLevel(cfg.Log.Level), logOutput)
+
+	l.Info().Str("version", Version).Str("component", "startup").
+		Msgf("running version %s, build date: %s, commint: %s ", Version, BuildTime, ShaVer)
+
+	// print config messages delayed
+	for _, m := range cfg.Msgs {
+		if m.Level == "info" {
+			l.Info().Str("component", "config").Msg(m.Msg)
+		} else {
+			l.Debug().Str("component", "config").Msg(m.Msg)
+		}
+	}
+
+	// session based auth
+	//cookieStore, err := auth.CookieStore(hashKey, blockKey)
+	cookieStore, err := auth.FsStore(cfg.Auth.SessionPath, []byte(cfg.Auth.HashKey), []byte(cfg.Auth.BlockKey))
+	if err != nil {
+		return err
+	}
+	sessionAuth, err := auth.NewSessionMgr(auth.SessionCfg{
+		Store: cookieStore,
+	})
+	if err != nil {
+		return err
+	}
+
+	var users auth.UserLogin
+	// load the correct user manager
+	switch cfg.Auth.UserStore.StoreType {
+	case "static":
+		staticUsers := user.StaticUsers{}
+		for _, u := range cfg.Auth.UserStore.Users {
+			staticUsers.Add(u.Name, u.Pw)
+		}
+		users = &staticUsers
+		l.Debug().Str("component", "users").Msgf("loading %d static user(s)", len(staticUsers.Users))
+	case "file":
+		if cfg.Auth.UserStore.FilePath == "" {
+			return fmt.Errorf("no path for users file is empty")
+		}
+		staticUsers, err := user.FromFile(cfg.Auth.UserStore.FilePath)
+		if err != nil {
+			return err
+		}
+		users = staticUsers
+		l.Debug().Str("component", "users").Msgf("loading %d users from file", len(staticUsers.Users))
+	default:
+		return fmt.Errorf("wrong user store in configuration, %s is not supported", cfg.Auth.UserStore.StoreType)
+	}
+
+	// Main APApplication handler
+	appCfg := router.AppCfg{
+		Logger:   l,
+		AuthMngr: sessionAuth,
+		Users:    users,
+	}
+	rootHandler, err := router.NewAppHandler(appCfg)
+	if err != nil {
+		return err
+	}
+
+	s, err := server.New(server.Cfg{
+		Addr:       cfg.Server.Addr(),
+		Handler:    rootHandler,
+		SkipObs:    false,
+		ObsAddr:    cfg.Obs.Addr(),
+		ObsHandler: handlers.Observability(),
+		Logger: func(msg string, isErr bool) {
+			if isErr {
+				l.Warn().Str("component", "server").Msg(msg)
+			} else {
+				l.Info().Str("component", "server").Msg(msg)
+			}
+		},
+	})
+	if err != nil {
+		return err
+	}
+
+	return s.Start()
 }
