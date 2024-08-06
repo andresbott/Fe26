@@ -1,28 +1,14 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import MainAppView from '@/views/MainAppView.vue'
 import { useUserStore } from '@/stores/user.js'
-import { ref } from 'vue'
-// import process from "eslint-plugin-vue/lib/configs/base.js";
-
-let firstLoad = true
 
 const router = createRouter({
-    // history: createWebHistory(),
-    history: createWebHistory('/spa'),
+    history: createWebHistory(),
     routes: [
         {
             path: '/',
-            name: 'landing',
+            name: 'app',
             meta: {
                 // requiresAuth: true
-            },
-            component: () => import('@/views/LandingPage.vue')
-        },
-        {
-            path: '/app',
-            name: 'home',
-            meta: {
-                requiresAuth: true
             },
             component: () => import('@/views/MainAppView.vue')
         },
@@ -34,25 +20,11 @@ const router = createRouter({
             },
             component: () => import('@/views/LoginView.vue')
         },
-        // {
-        //   path: '/landing',
-        //   name: 'landing',
-        //   component: () => import('@/views/pages/Landing.vue')
-        // },
-        // {
-        //   path: '/pages/notfound',
-        //   name: 'notfound',
-        //   component: () => import('@/views/pages/NotFound.vue')
-        // },
-        //
-
         {
             path: '/:pathMatch(.*)*',
             name: 'NotFound',
             component: () => import('@/views/404.vue')
         }
-
-        // { path: "*", component: {        template: '<p>Page Not Found</p>'      }
     ]
 })
 

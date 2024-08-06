@@ -2,19 +2,15 @@ package router
 
 import (
 	_ "embed"
-	"github.com/andresbott/go-carbon/app/spa"
+	"github.com/andresbott/Fe26/app/handlers/fs"
+	"github.com/andresbott/Fe26/app/spa"
+	"github.com/andresbott/go-carbon/app/handlrs"
 	"github.com/andresbott/go-carbon/libs/auth"
+	"github.com/andresbott/go-carbon/libs/http/handlers"
 	"github.com/andresbott/go-carbon/libs/http/middleware"
-	"github.com/andresbott/go-carbon/libs/user"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
-	"golang.org/x/crypto/bcrypt"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
-	"gorm.io/gorm/logger"
-	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
@@ -30,10 +26,10 @@ func (h *MyAppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 //var loginForm string
 
 type AppCfg struct {
-	Logger   *zerolog.Logger
-	Db       *gorm.DB
-	AuthMngr *auth.SessionMgr
-	Users    auth.UserLogin
+	Logger      *zerolog.Logger
+	AuthEnabled bool
+	AuthMngr    *auth.SessionMgr
+	Users       auth.UserLogin
 }
 
 // NewAppHandler generates the main url router handler to be used in the server
@@ -51,108 +47,75 @@ func NewAppHandler(cfg AppCfg) (*MyAppHandler, error) {
 	throttle := middleware.ReqThrottle{
 		MinDelay: 1500 * time.Millisecond,
 		MaxDelay: 3000 * time.Millisecond,
-		On:       true,
+		On:       false,
 	}
 	r.Use(throttle.Throttle)
 
-	// attach API v0 handlers
-	err := apiV0(r, cfg.AuthMngr, cfg.Users) // api/v0 routes
-	if err != nil {
-		return nil, err
-	}
+	// todo this should reflect prod vs non-prod property
+	genericErrorMessage := false
 
-	// attach the basic auth handler
-	err = basicAuthProtected(r.PathPrefix("/basic").Subrouter(), cfg.Users) // api/v0 routes
-	if err != nil {
-		return nil, err
+	fileServer := fs.FileServer(http.Dir("./"), "/api/v0/fs/")
+	if cfg.AuthEnabled {
+		// this sub router does NOT enforce authentication
+		openSubRoute := r.PathPrefix("/api/v0").Subrouter()
+		openSubRoute.Use(func(handler http.Handler) http.Handler {
+			return middleware.JsonErrMiddleware(handler, genericErrorMessage)
+		})
+		// add users handling to api
+		userApi(openSubRoute, cfg.AuthMngr, cfg.Users)
+
+		// this sub router does enforce authentication
+		protected := r.PathPrefix("/api/v0").Subrouter()
+		protected.Use(func(handler http.Handler) http.Handler {
+			return middleware.JsonErrMiddleware(handler, genericErrorMessage)
+		}, cfg.AuthMngr.Middleware)
+	} else {
+		sub := r.PathPrefix("/api/v0").Subrouter()
+		sub.Use(func(handler http.Handler) http.Handler {
+			return middleware.JsonErrMiddleware(handler, genericErrorMessage)
+		})
+		// simple User API to let the SPA know it's running without auth
+
+		// STATUS
+		sub.Path("/user/status").Methods(http.MethodGet).Handler(handlrs.AuthDisabledHandler())
+		sub.Path("/user/status").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
+
+		// fs
+		sub.PathPrefix("/fs").Methods(http.MethodGet).Handler(fileServer)
+		sub.PathPrefix("/fs").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
 	}
 
 	// attach spa handler
 	// if you want to serve the spa from the root, pass "/" to the spa handler and the path prefix
 	// not that the SPA base and route needs to be adjusted accordingly
-	spaHandler, err := spa.NewCarbonSpa("/spa")
+	spaHandler, err := spa.NewCarbonSpa("/")
 	if err != nil {
 		return nil, err
 	}
-	r.Methods(http.MethodGet).PathPrefix("/spa").Handler(spaHandler)
-
-	// attach the demo handler on the root path
-	err = demo(r)
-	if err != nil {
-		return nil, err
-	}
-
-	// use session auth
-	err = SessionProtected(r, cfg.AuthMngr)
-	if err != nil {
-		return nil, err
-	}
-
-	// root page
-	// --------------------------
-
-	// SPA starts here: ====================================================
-
-	//hashKey := []byte("oach9iu2uavahcheephi4FahzaeNge8yeecie4jee9rah9ahrah6tithai7Oow5U")
-	//blockKey := []byte("eeth3oon5eewifaogeibieShey5eiJ0E")
-	//
-	//sessStor, err := auth.FsStore("", hashKey, blockKey)
-	//if err != nil {
-	//	return nil, err
-	//}
-	//
-	//sessionAuth, err := auth.NewSessionMgr(auth.SessionCfg{
-	//	Store: sessStor,
-	//})
-	//
-	//loginHandler := auth.JsonAuthHandler(sessionAuth, demoUsers)
-	//r.Path("/login").Methods(http.MethodPost).Handler(loginHandler)
+	r.Methods(http.MethodGet).PathPrefix("/").Handler(spaHandler)
 
 	return &MyAppHandler{
 		router: r,
 	}, nil
 }
+func userApi(apiRoute *mux.Router, session *auth.SessionMgr, users auth.UserLogin) {
 
-// TODO put on propper place and usage
-// nolint: unused
-func sampleUserManager() (*user.DbManager, error) {
+	//  LOGIN
+	apiRoute.Path("/user/login").Methods(http.MethodPost).Handler(handlrs.UserLoginHandler(session, users))
 
-	gormLogger := logger.New(
-		log.New(os.Stdout, "\r\n", log.LstdFlags),
-		logger.Config{
-			SlowThreshold:             time.Second,
-			LogLevel:                  logger.Warn,
-			IgnoreRecordNotFoundError: true,
-			Colorful:                  false,
-		},
-	)
+	apiRoute.Path("/user/login").Methods(http.MethodOptions).Handler(http.HandlerFunc(func(writer http.ResponseWriter, request *http.Request) {
 
-	db, err := gorm.Open(sqlite.Open("file::memory:?cache=shared"), &gorm.Config{
-		Logger: gormLogger,
-	})
+	}))
+	apiRoute.Path("/user/login").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
 
-	if err != nil {
-		return nil, err
-	}
+	// LOGOUT
+	apiRoute.Path("/user/logout").Handler(handlrs.UserLogoutHandler(session))
 
-	// set some options
-	opts := user.ManagerOpts{
-		BcryptDifficulty: bcrypt.MinCost,
-	}
+	// STATUS
+	apiRoute.Path("/user/status").Methods(http.MethodGet).Handler(handlrs.UserStatusHandler(session))
+	apiRoute.Path("/user/status").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
 
-	userMng, err := user.NewDbManager(db, opts)
-	if err != nil {
-		return nil, err
-	}
-
-	// create a user
-	err = userMng.CreateUser(user.User{
-		Name:  "test",
-		Email: "test@mail.com",
-		Pw:    "1234",
-	})
-	if err != nil {
-		return nil, err
-	}
-	return userMng, nil
+	// OPTIONS
+	apiRoute.Path("/user/options").Methods(http.MethodGet).Handler(handlers.StatusErr(http.StatusNotImplemented))
+	apiRoute.Path("/user/options").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
 }

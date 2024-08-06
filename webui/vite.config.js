@@ -13,7 +13,6 @@ export default defineConfig({
       '@': fileURLToPath(new URL('./src', import.meta.url))
     }
   },
-  base: "spa",
   server: {
     proxy: {
       // This is the path you want to proxy

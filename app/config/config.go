@@ -18,8 +18,9 @@ type log struct {
 }
 
 type serverCfg struct {
-	BindIp string
-	Port   int
+	Disabled bool
+	BindIp   string
+	Port     int
 }
 
 func (c serverCfg) Addr() string {
@@ -30,6 +31,7 @@ func (c serverCfg) Addr() string {
 }
 
 type authConfig struct {
+	Enabled     bool // set to true to enable auth, default false
 	SessionPath string
 	HashKey     string
 	BlockKey    string
@@ -54,13 +56,15 @@ var defaultCfg = AppCfg{
 		Port:   8085,
 	},
 	Obs: serverCfg{
-		BindIp: "",
-		Port:   9090,
+		Disabled: true,
+		BindIp:   "",
+		Port:     9090,
 	},
 	Auth: authConfig{
-		SessionPath: "", // location where the sessions are stored
-		HashKey:     "", // cookie store encryption key
-		BlockKey:    "", // cookie value encryption
+		Enabled:     false, // set to true to enable auth, default false
+		SessionPath: "",    // location where the sessions are stored
+		HashKey:     "",    // cookie store encryption key
+		BlockKey:    "",    // cookie value encryption
 		UserStore: userStore{
 			StoreType: "static",
 			Users:     []User{},
@@ -76,14 +80,16 @@ type Msg struct {
 	Msg   string
 }
 
+const ConfigEnvVar = "FE26"
+
 func Get(file string) (AppCfg, error) {
 	configMsg := []Msg{}
 	cfg := AppCfg{}
 	var err error
 	_, err = config.Load(
 		config.Defaults{Item: defaultCfg},
-		config.CfgFile{Path: file},
-		config.EnvVar{Prefix: "CARBON"},
+		//config.CfgFile{Path: file}, // todo make file optional
+		config.EnvVar{Prefix: ConfigEnvVar},
 		config.Unmarshal{Item: &cfg},
 		config.Writer{Fn: func(level, msg string) {
 			if level == config.InfoLevel {

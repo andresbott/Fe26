@@ -16,11 +16,16 @@ func Execute() {
 }
 
 func newRootCommand() *cobra.Command {
-
+	var configFile = "./config.yaml"
 	cmd := &cobra.Command{
 		Use:   "fe26",
 		Short: "fe26 is a basic http file server written in GO",
+		RunE: func(cmd *cobra.Command, args []string) error {
+			return runServer(configFile)
+		},
 	}
+
+	cmd.Flags().StringVarP(&configFile, "config", "c", configFile, "config file")
 
 	// TODO start without subcommand
 
@@ -30,7 +35,6 @@ func newRootCommand() *cobra.Command {
 	})
 
 	cmd.AddCommand(
-		serverCmd(),
 		versionCmd(),
 	)
 

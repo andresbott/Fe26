@@ -4,29 +4,12 @@ import (
 	"fmt"
 	"github.com/andresbott/Fe26/app/config"
 	"github.com/andresbott/Fe26/app/router"
-
 	"github.com/andresbott/go-carbon/libs/auth"
 	"github.com/andresbott/go-carbon/libs/http/handlers"
 	"github.com/andresbott/go-carbon/libs/http/server"
 	"github.com/andresbott/go-carbon/libs/logzero"
 	"github.com/andresbott/go-carbon/libs/user"
-	"github.com/spf13/cobra"
 )
-
-func serverCmd() *cobra.Command {
-	var configFile = "./config.yaml"
-	cmd := &cobra.Command{
-		Use:   "start",
-		Short: "start a web server",
-		Long:  "start a web server demonstrating the different features of the library",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			return runServer(configFile)
-		},
-	}
-
-	cmd.Flags().StringVarP(&configFile, "config", "c", configFile, "config file")
-	return cmd
-}
 
 func runServer(configFile string) error {
 
@@ -54,49 +37,55 @@ func runServer(configFile string) error {
 		}
 	}
 
-	// session based auth
-	//cookieStore, err := auth.CookieStore(hashKey, blockKey)
-	cookieStore, err := auth.FsStore(cfg.Auth.SessionPath, []byte(cfg.Auth.HashKey), []byte(cfg.Auth.BlockKey))
-	if err != nil {
-		return err
-	}
-	sessionAuth, err := auth.NewSessionMgr(auth.SessionCfg{
-		Store: cookieStore,
-	})
-	if err != nil {
-		return err
+	// Main APApplication handler
+	appCfg := router.AppCfg{
+		Logger:      l,
+		AuthEnabled: false,
 	}
 
-	var users auth.UserLogin
-	// load the correct user manager
-	switch cfg.Auth.UserStore.StoreType {
-	case "static":
-		staticUsers := user.StaticUsers{}
-		for _, u := range cfg.Auth.UserStore.Users {
-			staticUsers.Add(u.Name, u.Pw)
-		}
-		users = &staticUsers
-		l.Debug().Str("component", "users").Msgf("loading %d static user(s)", len(staticUsers.Users))
-	case "file":
-		if cfg.Auth.UserStore.FilePath == "" {
-			return fmt.Errorf("no path for users file is empty")
-		}
-		staticUsers, err := user.FromFile(cfg.Auth.UserStore.FilePath)
+	if cfg.Auth.Enabled {
+		appCfg.AuthEnabled = true
+		// session based auth
+		//cookieStore, err := auth.CookieStore(hashKey, blockKey)
+		cookieStore, err := auth.FsStore(cfg.Auth.SessionPath, []byte(cfg.Auth.HashKey), []byte(cfg.Auth.BlockKey))
 		if err != nil {
 			return err
 		}
-		users = staticUsers
-		l.Debug().Str("component", "users").Msgf("loading %d users from file", len(staticUsers.Users))
-	default:
-		return fmt.Errorf("wrong user store in configuration, %s is not supported", cfg.Auth.UserStore.StoreType)
+		sessionAuth, err := auth.NewSessionMgr(auth.SessionCfg{
+			Store: cookieStore,
+		})
+		if err != nil {
+			return err
+		}
+		appCfg.AuthMngr = sessionAuth
+
+		var users auth.UserLogin
+		// load the correct user manager
+		switch cfg.Auth.UserStore.StoreType {
+		case "static":
+			staticUsers := user.StaticUsers{}
+			for _, u := range cfg.Auth.UserStore.Users {
+				staticUsers.Add(u.Name, u.Pw)
+			}
+			users = &staticUsers
+			l.Debug().Str("component", "users").Msgf("loading %d static user(s)", len(staticUsers.Users))
+		case "file":
+			if cfg.Auth.UserStore.FilePath == "" {
+				return fmt.Errorf("no path for users file is empty")
+			}
+			staticUsers, err := user.FromFile(cfg.Auth.UserStore.FilePath)
+			if err != nil {
+				return err
+			}
+			users = staticUsers
+			l.Debug().Str("component", "users").Msgf("loading %d users from file", len(staticUsers.Users))
+		default:
+			return fmt.Errorf("wrong user store in configuration, %s is not supported", cfg.Auth.UserStore.StoreType)
+		}
+		appCfg.Users = users
+
 	}
 
-	// Main APApplication handler
-	appCfg := router.AppCfg{
-		Logger:   l,
-		AuthMngr: sessionAuth,
-		Users:    users,
-	}
 	rootHandler, err := router.NewAppHandler(appCfg)
 	if err != nil {
 		return err
@@ -105,7 +94,7 @@ func runServer(configFile string) error {
 	s, err := server.New(server.Cfg{
 		Addr:       cfg.Server.Addr(),
 		Handler:    rootHandler,
-		SkipObs:    false,
+		SkipObs:    cfg.Obs.Disabled,
 		ObsAddr:    cfg.Obs.Addr(),
 		ObsHandler: handlers.Observability(),
 		Logger: func(msg string, isErr bool) {

@@ -16,7 +16,7 @@ const user = useUserStore()
             </router-link>
         </template>
 
-<!--        <InputText placeholder="Search" type="text" class="w-32 sm:w-auto" />-->
+        <!--        <InputText placeholder="Search" type="text" class="w-32 sm:w-auto" />-->
         <template v-slot:right>
             <UserProfile v-if="user.isLoggedIn" />
             <router-link v-if="!user.isLoggedIn" to="/login" class="layout-topbar-logo">
