@@ -3,6 +3,7 @@ import Vertical from '@/components/legos/Vertical.vue'
 import Horizontal from '@/components/legos/horizontal.vue'
 import DirectoryList from '@/components/directoryList.vue'
 import FileList from '@/components/fileList.vue'
+import Sidebar from '@/views/parts/sidebar.vue'
 import { useFileStore } from '@/stores/files.js'
 import { computed, onMounted } from 'vue'
 
@@ -18,7 +19,7 @@ const getNames = computed(() => {
         files: []
     }
 
-    if (!store.isRoot) {
+    if (!store.isRoot()) {
         nodes.dirs.push({
             key: 0,
             label: '..',
@@ -49,23 +50,34 @@ const getNames = computed(() => {
 })
 
 </script>
+<style>
+.logo{
+    background: var(--main-color);
+    width: 200px;
+    height: 60px;
+    margin: 1rem;
+}
+</style>
 
 <template>
-    <vertical :center-content="false">
-        <template v-slot:header>
-            <!--            <TopBar />-->
-        </template>
-
-        <template v-slot:main>
-            <horizontal>
-                <template v-slot:left>
+    <Sidebar>
+        <template v-slot:left>
+            <vertical :center-content="false">
+                <template v-slot:header>
+                    <!--            <TopBar />-->
+                    <div  class="logo">
+                        icon
+                    </div>
+                </template>
+                <template v-slot:main>
                     <directory-list :dirs="getNames.dirs"/>
                 </template>
-                <template v-slot:default>
-                    <file-list :files="getNames.files"/>
-                </template>
-            </horizontal>
+                <template v-slot:footer>my footer </template>
+            </vertical>
         </template>
-        <template v-slot:footer>my footer </template>
-    </vertical>
+        <template v-slot:default>
+            <file-list :files="getNames.files"/>
+        </template>
+    </Sidebar>
+
 </template>

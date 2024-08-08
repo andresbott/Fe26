@@ -18,8 +18,15 @@ export const useFileStore = defineStore('files', () => {
             console.log('No items found in the payload.')
         }
     }
+    const isRoot = () =>{
+        if (location.value === "/"){
+            return true
+        }else {
+            return false
+        }
+    }
 
-    const goTo = (dest ) => {
+    const goTo = (dest) => {
         isDataLoaded.value = true
         isLoading.value = true
         location.value = path.normalize(path.join(location.value,dest))
@@ -46,7 +53,8 @@ export const useFileStore = defineStore('files', () => {
 
     return {
         files,
-        goTo
+        goTo,
+        isRoot
 
     }
 })
