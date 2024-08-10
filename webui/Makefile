@@ -10,10 +10,11 @@ fmt: ## format code
 run: ## run the local dev
 	@npm run dev
 
-
 build: ## build a production release
 	@npm run build
 
+dependencies: ## check unused dependencies
+	@npx npm-check
 
 
 #==========================================================================================

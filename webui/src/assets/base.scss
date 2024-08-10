@@ -3,7 +3,7 @@
     --main-color: #a93956;
     --bg-color-dark: #2f3b3d;
     --accent-color-dark: #45575a;
-    --bg-color-light: #eeeeee;
+    --bg-color-light: #fff;
     --text-color-ligth: rgb(186, 186, 186);
 
 
@@ -58,4 +58,7 @@ body {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+.pi,body{
+    font-size: 90% !important;
 }

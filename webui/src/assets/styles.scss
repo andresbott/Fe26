@@ -1,1 +1,20 @@
 @import url("base.scss");
+
+
+hr.space{
+  border: 0;
+  border-bottom: 1px solid #636363;
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+// Prmievue components
+//
+// = Toast
+.p-toast.p-component.only-message{
+  .p-toast-summary{
+display: none;
+  }
+  .p-toast-detail{
+line-height: 1.4rem;
+  }
+}

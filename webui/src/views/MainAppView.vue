@@ -1,16 +1,28 @@
 <script setup>
 import Vertical from '@/components/legos/Vertical.vue'
-import Horizontal from '@/components/legos/horizontal.vue'
 import DirectoryList from '@/components/directoryList.vue'
 import FileList from '@/components/fileList.vue'
 import Sidebar from '@/views/parts/sidebar.vue'
+import Logo from '@/components/Logo.vue'
 import { useFileStore } from '@/stores/files.js'
-import { computed, onMounted } from 'vue'
+import { computed, onMounted, ref } from 'vue'
+import Error from '@/views/parts/error.vue'
+import Breadcrumb from 'primevue/breadcrumb'
+import { DateTime } from 'luxon'
+import path from 'path-browserify'
+
+
 
 const store = useFileStore()
 onMounted(() => {
     store.goTo('')
 })
+
+function timeToUnix(input ){
+    return DateTime
+        .fromISO(input)
+        .toSeconds()
+}
 
 const getNames = computed(() => {
     const files = store.files
@@ -38,36 +50,40 @@ const getNames = computed(() => {
             })
         }else {
             nodes.files.push({
-                key: key + 1,
-                label: value.Name,
-                selectable: true,
-                icon: 'pi pi-fw pi-folder'
+                icon:  'pi pi-fw pi-folder',
+                name: value.Name,
+                filePath : path.join(store.filePath,value.Name),
+                size: value.Size,
+                modTime: timeToUnix(value.ModTime),
             })
         }
     }
-
     return nodes
 })
 
+
+const home = ref({
+    icon: 'pi pi-home'
+});
+const items = ref([
+    { label: 'Electronics' },
+    { label: 'Computer' },
+    { label: 'Accessories' },
+    { label: 'Keyboard' },
+    { label: 'Wireless' }
+]);
 </script>
-<style>
-.logo{
-    background: var(--main-color);
-    width: 200px;
-    height: 60px;
-    margin: 1rem;
-}
-</style>
+
 
 <template>
+
+    <Error/>
     <Sidebar>
         <template v-slot:left>
             <vertical :center-content="false">
                 <template v-slot:header>
-                    <!--            <TopBar />-->
-                    <div  class="logo">
-                        icon
-                    </div>
+                    <Logo/>
+                    <hr class="space"/>
                 </template>
                 <template v-slot:main>
                     <directory-list :dirs="getNames.dirs"/>
@@ -76,6 +92,7 @@ const getNames = computed(() => {
             </vertical>
         </template>
         <template v-slot:default>
+            <Breadcrumb :home="home" :model="items" />
             <file-list :files="getNames.files"/>
         </template>
     </Sidebar>

@@ -10,6 +10,9 @@ export const useFileStore = defineStore('files', () => {
     const location = ref('/')
     const isDataLoaded = ref(false)
     const isLoading = ref(false)
+    const isErr = ref(false)
+    const errMessage = ref("")
+    const filePath = ref("")
 
     const processData = (payload) => {
         if (payload.Items && Array.isArray(payload.Items)) {
@@ -19,17 +22,16 @@ export const useFileStore = defineStore('files', () => {
         }
     }
     const isRoot = () =>{
-        if (location.value === "/"){
-            return true
-        }else {
-            return false
-        }
+        return location.value === "/";
     }
 
     const goTo = (dest) => {
         isDataLoaded.value = true
         isLoading.value = true
+        isErr.value =false
+        errMessage.value=""
         location.value = path.normalize(path.join(location.value,dest))
+        filePath.value = filesEndpoint +location.value
 
         axios
             .get(filesEndpoint +location.value)
@@ -43,7 +45,8 @@ export const useFileStore = defineStore('files', () => {
                 }
             })
             .catch((err) => {
-                console.log(err)
+                isErr.value =true
+                errMessage.value=err.message
             })
             .finally(() => {
                 isLoading.value = false
@@ -52,9 +55,12 @@ export const useFileStore = defineStore('files', () => {
 
 
     return {
-        files,
-        goTo,
-        isRoot
+        files, // a list of files in the dir
+        filePath,
+        goTo, // trigger navigation
+        isRoot, // check if the dir is the root
+        isErr, // true if there was an error
+        errMessage // the error message
 
     }
 })

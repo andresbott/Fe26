@@ -109,10 +109,11 @@ func (d fileInfoDirs) size(i int) int64        { return d[i].Size() }
 func (d fileInfoDirs) modTime(i int) time.Time { return d[i].ModTime() }
 
 type fileInfoPayload struct {
-	Name    string
-	Size    int64
-	ModTime time.Time
-	IsDir   bool
+	Name     string
+	FullPath string
+	Size     int64
+	ModTime  time.Time
+	IsDir    bool
 }
 type dirListPayload struct {
 	Items []fileInfoPayload

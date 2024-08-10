@@ -1,19 +1,13 @@
 import { createApp } from 'vue'
-import { createPinia } from 'pinia'
-
 import App from './App.vue'
-import router from './router'
+const app = createApp(App)
 
 import CustomTheme from '@/theme.js'
 import 'primeflex/primeflex.css'
 import 'primeicons/primeicons.css'
-
 import '@/assets/styles.scss'
 
 import PrimeVue from 'primevue/config'
-const app = createApp(App)
-
-app.use(createPinia())
 app.use(PrimeVue, {
     // Default theme configuration
     theme: {
@@ -26,8 +20,20 @@ app.use(PrimeVue, {
     }
 })
 
+// pinia store
+import { createPinia } from 'pinia'
+app.use(createPinia())
+
+// initialize toast service
+import ToastService from 'primevue/toastservice';
+app.use(ToastService);
+
+
+// add the app router
+import router from './router'
 app.use(router)
 
+// focus trap
 import FocusTrap from 'primevue/focustrap'
 app.directive('focustrap', FocusTrap)
 
