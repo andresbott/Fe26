@@ -5,18 +5,37 @@ import FileList from '@/components/fileList.vue'
 import Sidebar from '@/views/parts/sidebar.vue'
 import Logo from '@/components/Logo.vue'
 import { useFileStore } from '@/stores/files.js'
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import Error from '@/views/parts/error.vue'
 import Breadcrumb from 'primevue/breadcrumb'
 import { DateTime } from 'luxon'
 import path from 'path-browserify'
+import { useRoute,useRouter } from 'vue-router'
 
-
-
+const route = useRoute();
+const router = useRouter()
 const store = useFileStore()
+
+// on mount load the content based on the navigation path
 onMounted(() => {
-    store.goTo('')
+    // console.log("on mount, load: "+store.getLocation(route.params.path))
+    store.load(store.getLocation(route.params.path))
 })
+// when a dir is clicked, we change the url
+const click = (dirname ) =>{
+    // this joins the vue sub-path "files" with the file system location
+    // console.log("on click, push path: "+path.normalize(path.join("/files",store.getLocation(dirname))))
+    router.push(path.normalize(path.join("/files",store.getLocation(dirname))))
+}
+
+// this warcher watches for changes on the url and appies them
+watch(
+    () => route.params.path,
+    (newLocation, oldId) => {
+        store.load(path.normalize(path.join("/",newLocation)))
+    }
+)
+
 
 function timeToUnix(input ){
     return DateTime
@@ -61,22 +80,38 @@ const getNames = computed(() => {
     return nodes
 })
 
-
 const home = ref({
-    icon: 'pi pi-home'
+    icon: 'pi pi-home',
+    label: "Root",
+    command: () =>{
+        router.push(path.normalize("/files/"))
+    }
 });
-const items = ref([
-    { label: 'Electronics' },
-    { label: 'Computer' },
-    { label: 'Accessories' },
-    { label: 'Keyboard' },
-    { label: 'Wireless' }
-]);
+const breadcrumbItems = computed(()=>{
+    const items = store.getLocation("").split('/').filter(function (el) {
+        return el !== "";
+    });
+    const out = [];
+    let i = 0;
+    let base ="/"
+    while (i < items.length) {
+        base = path.join(base, items[i])
+        let p = base
+        out.push( {
+            label: items[i] ,
+            command: () =>{
+                router.push(path.normalize(path.join("/files/",p)))
+            }
+        },)
+        i++;
+    }
+    return out
+})
+
 </script>
 
 
 <template>
-
     <Error/>
     <Sidebar>
         <template v-slot:left>
@@ -86,13 +121,13 @@ const items = ref([
                     <hr class="space"/>
                 </template>
                 <template v-slot:main>
-                    <directory-list :dirs="getNames.dirs"/>
+                    <directory-list :dirs="getNames.dirs" :select="click"/>
                 </template>
                 <template v-slot:footer>my footer </template>
             </vertical>
         </template>
         <template v-slot:default>
-            <Breadcrumb :home="home" :model="items" />
+            <Breadcrumb :home="home" :model="breadcrumbItems" />
             <file-list :files="getNames.files"/>
         </template>
     </Sidebar>

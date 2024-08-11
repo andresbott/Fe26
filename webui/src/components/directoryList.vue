@@ -1,15 +1,17 @@
 <script setup>
 import Tree from 'primevue/tree'
-import { useFileStore } from '@/stores/files.js'
-const store = useFileStore()
 const items = defineProps({
     dirs: {
         default: []
     },
+    select:{
+        default: ""
+    }
 })
-
 const onNodeSelect = (node) => {
-    store.goTo(node.label)
+    if (items.select && typeof items.select==="function") {
+        items.select(node.label)
+    }
 }
 </script>
 

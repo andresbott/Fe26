@@ -8,7 +8,6 @@ const filesEndpoint = import.meta.env.VITE_SERVER_URL_V0 + '/fs'
 export const useFileStore = defineStore('files', () => {
     const files = ref([])
     const location = ref('/')
-    const isDataLoaded = ref(false)
     const isLoading = ref(false)
     const isErr = ref(false)
     const errMessage = ref("")
@@ -24,17 +23,20 @@ export const useFileStore = defineStore('files', () => {
     const isRoot = () =>{
         return location.value === "/";
     }
+    const getLocation = (dir) =>{
+        return path.normalize(path.join("/",location.value,dir))
+    }
 
-    const goTo = (dest) => {
-        isDataLoaded.value = true
+    const load = (dest) => {
         isLoading.value = true
         isErr.value =false
         errMessage.value=""
-        location.value = path.normalize(path.join(location.value,dest))
+
+        location.value = path.normalize(dest)
         filePath.value = filesEndpoint +location.value
 
         axios
-            .get(filesEndpoint +location.value)
+            .get(path.join(filesEndpoint, dest))
             .then((res) => {
                 if (res.status === 200) {
                     processData(res.data)
@@ -56,12 +58,12 @@ export const useFileStore = defineStore('files', () => {
 
     return {
         files, // a list of files in the dir
-        filePath,
-        goTo, // trigger navigation
+        filePath, // full location path including api
+        load, // trigger navigation
         isRoot, // check if the dir is the root
+        getLocation, // return the new path after adding a directory
         isErr, // true if there was an error
         errMessage // the error message
-
     }
 })
 

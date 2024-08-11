@@ -1,11 +1,24 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user.js'
 
+const appPrefix = "files"
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
             path: '/',
+            redirect: to => {
+                return { path: '/files/'}
+            },
+        },
+        {
+            path: '/files',
+            redirect: to => {
+                return { path: '/files/'}
+            },
+        },
+        {
+            path: '/files/:path(.*)',
             name: 'app',
             meta: {
                 // requiresAuth: true
@@ -20,11 +33,6 @@ const router = createRouter({
             },
             component: () => import('@/views/LoginView.vue')
         },
-        {
-            path: '/:pathMatch(.*)*',
-            name: 'NotFound',
-            component: () => import('@/views/404.vue')
-        }
     ]
 })
 
