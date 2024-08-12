@@ -1,8 +1,9 @@
-package fs
+package fileserver
 
 import (
 	"encoding/json"
 	"errors"
+	"github.com/spf13/afero"
 	"io/fs"
 	"net/http"
 	"path"
@@ -13,44 +14,40 @@ import (
 
 // FileServer returns a handler that serves HTTP requests
 // with the contents of the file system rooted at root.
-//
-// this is a wrapper around the http.FileServer but generating
-// json responses instead of html
-//
-// To use the operating system's file system implementation,
-// use http.Dir:
-//
-//	http.Handle("/", http.FileServer(http.Dir("/tmp")))
-//
-// To use an fs.FS implementation, use http.FS to convert it:
-//
-//	http.Handle("/", http.FileServer(http.FS(fsys)))
-//
-// To use afero use:
-// http.Handle("/", http.FileServer(afero.NewHttpFs(afero.FS)))
-func FileServer(root http.FileSystem, prefix string) http.Handler {
-	return &fileHandler{root, prefix}
+// it uses afero.Fs as interface
+func FileServer(fs afero.Fs, prefix string) http.Handler {
+	return &fileHandler{fs, prefix}
 }
 
 type fileHandler struct {
-	root   http.FileSystem
+	fs     afero.Fs
 	prefix string
 }
 
 func (f *fileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	switch r.Method {
+	case http.MethodGet:
+		f.handleGet(w, r)
+	case http.MethodDelete:
+		f.handleDelete(w, r)
+	default:
+		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+	}
+}
+
+func (f *fileHandler) handleGet(w http.ResponseWriter, r *http.Request) {
 	upath := r.URL.Path
 	if !strings.HasPrefix(upath, "/") {
 		upath = "/" + upath
 		r.URL.Path = upath
 	}
 	upath = strings.TrimPrefix(upath, f.prefix)
-	serveFile(w, r, f.root, path.Clean(upath))
+	serveFile(w, r, f.fs, path.Clean(upath))
 }
 
 // name is '/'-separated, not filepath.Separator.
-func serveFile(w http.ResponseWriter, r *http.Request, fs http.FileSystem, name string) {
-
-	f, err := fs.Open(name)
+func serveFile(w http.ResponseWriter, r *http.Request, fs afero.Fs, name string) {
+	f, err := fs.Open("/" + name)
 	if err != nil {
 		msg, code := toHTTPError(err)
 		http.Error(w, msg, code)

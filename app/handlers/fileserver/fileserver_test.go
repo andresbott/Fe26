@@ -1,4 +1,4 @@
-package fs
+package fileserver
 
 import (
 	"encoding/json"
@@ -93,7 +93,7 @@ func TestFsHandler(t *testing.T) {
 			}
 			fs := mock.AferoSample(sampleDirs, SampleFiles)
 
-			handler := FileServer(mock.HttpFs(fs), tc.prefix)
+			handler := FileServer(fs, tc.prefix)
 			if err != nil {
 				t.Fatal(err)
 			}

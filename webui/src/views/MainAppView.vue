@@ -11,6 +11,7 @@ import Breadcrumb from 'primevue/breadcrumb'
 import { DateTime } from 'luxon'
 import path from 'path-browserify'
 import { useRoute,useRouter } from 'vue-router'
+import Upload from '@/views/parts/upload.vue'
 
 const route = useRoute();
 const router = useRouter()
@@ -129,6 +130,7 @@ const breadcrumbItems = computed(()=>{
         <template v-slot:default>
             <Breadcrumb :home="home" :model="breadcrumbItems" />
             <file-list :files="getNames.files"/>
+            <Upload />
         </template>
     </Sidebar>
 

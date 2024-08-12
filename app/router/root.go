@@ -2,7 +2,7 @@ package router
 
 import (
 	_ "embed"
-	"github.com/andresbott/Fe26/app/handlers/fs"
+	"github.com/andresbott/Fe26/app/handlers/fileserver"
 	"github.com/andresbott/Fe26/app/spa"
 	"github.com/andresbott/go-carbon/app/handlrs"
 	"github.com/andresbott/go-carbon/libs/auth"
@@ -10,7 +10,9 @@ import (
 	"github.com/andresbott/go-carbon/libs/http/middleware"
 	"github.com/gorilla/mux"
 	"github.com/rs/zerolog"
+	"github.com/spf13/afero"
 	"net/http"
+	"path/filepath"
 	"time"
 )
 
@@ -54,7 +56,12 @@ func NewAppHandler(cfg AppCfg) (*MyAppHandler, error) {
 	// todo this should reflect prod vs non-prod property
 	genericErrorMessage := false
 
-	fileServer := fs.FileServer(http.Dir("./"), "/api/v0/fs/")
+	// todo read the path from config
+	absPath, err := filepath.Abs("./test")
+	if err != nil {
+		return nil, err
+	}
+	fileServer := fileserver.FileServer(afero.NewBasePathFs(afero.NewOsFs(), absPath), "/api/v0/fs/")
 	if cfg.AuthEnabled {
 		// this sub router does NOT enforce authentication
 		openSubRoute := r.PathPrefix("/api/v0").Subrouter()
@@ -81,7 +88,7 @@ func NewAppHandler(cfg AppCfg) (*MyAppHandler, error) {
 		sub.Path("/user/status").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
 
 		// fs
-		sub.PathPrefix("/fs").Methods(http.MethodGet).Handler(fileServer)
+		sub.PathPrefix("/fs").Methods(http.MethodGet, http.MethodDelete).Handler(fileServer)
 		sub.PathPrefix("/fs").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
 	}
 
