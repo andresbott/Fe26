@@ -1,51 +1,49 @@
 
-<style>
+<style lang="scss">
 .fe26-file-list{
     --c-datatable-body-cell-padding:0.5rem;
     --c-datatable-row-color: #7f7f7f;
     margin: 1rem;
-}
-.fe26-file-list a{
-    color: var( --c-datatable-row-color);
-    text-decoration: none;
-}
-.fe26-file-list .p-button{
-    opacity: 1;
-    padding: 0.5rem 0.5rem;
-    width: 2.2rem;
-}
-.fe26-file-list .p-datatable-header-cell,
-.fe26-file-list .p-datatable-sortable-column:not(.p-datatable-column-sorted):hover
-{
-    border: 0;
-    background: none;
-}
-.fe26-file-list .p-datatable-column-header-content{
-    color: var( --c-datatable-row-color);
-}
-.fe26-file-list .p-datatable-column-sorted .p-datatable-column-header-content,
-.fe26-file-list .p-datatable-column-sorted .p-datatable-sort-icon {
-    color: #484848;
-}
-
-
-.fe26-file-list.p-datatable.p-datatable-striped .p-datatable-tbody > tr.p-row-odd{
-    background: #f5f5f5;
-    border: 0;
-}
-.fe26-file-list.p-datatable.p-datatable-striped .p-datatable-tbody > tr:hover{
-    background: #e6e4e4;
-}
-.fe26-file-list.p-datatable.p-datatable-striped .p-datatable-tbody > tr{
-    background: none;
-}
-.fe26-file-list .p-button,
-.fe26-file-list .p-button.p-button-secondary:not(:disabled):hover,
-.fe26-file-list .p-button.p-button-danger:not(:disabled):hover
-{
-    border : 0;
-    border-radius: 2px;
-    background: transparent;
+    a{
+        color: var( --c-datatable-row-color);
+        text-decoration: none;
+    }
+    .p-button{
+        opacity: 1;
+        padding: 0.5rem 0.5rem;
+        width: 2.2rem;
+    }
+    .p-datatable-header-cell,
+    .p-datatable-sortable-column:not(.p-datatable-column-sorted):hover
+    {
+        border: 0;
+        background: none;
+    }
+    .p-datatable-column-header-content{
+        color: var( --c-datatable-row-color);
+    }
+    .p-datatable-column-sorted .p-datatable-column-header-content,
+    .p-datatable-column-sorted .p-datatable-sort-icon {
+        color: #484848;
+    }
+    &.p-datatable.p-datatable-striped .p-datatable-tbody > tr.p-row-odd{
+        background: #f5f5f5;
+        border: 0;
+    }
+    &.p-datatable.p-datatable-striped .p-datatable-tbody > tr:hover{
+        background: #e6e4e4;
+    }
+    &.p-datatable.p-datatable-striped .p-datatable-tbody > tr{
+        background: none;
+    }
+     .p-button,
+    .p-button.p-button-secondary:not(:disabled):hover,
+     .p-button.p-button-danger:not(:disabled):hover
+    {
+        border : 0;
+        border-radius: 2px;
+        background: transparent;
+    }
 }
 
 .fe26-file-list .p-button.btn-default,.fe26-file-list .p-button.btn-default:hover{
@@ -166,10 +164,9 @@ function askConfirmation(path){
     toDelFile.value = path
     dialogVisible.value = true
 }
-// todo remove
-console.log("\""+toDelFile.value+"\"")
+
 function deleteFile (){
-    store.deleteFile(toDelFile.value)
+    store.deleteItem(toDelFile.value)
     toDelFile.value = ""
     dialogVisible.value = false
 }

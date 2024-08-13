@@ -29,7 +29,7 @@ const click = (dirname ) =>{
     router.push(path.normalize(path.join("/files",store.getLocation(dirname))))
 }
 
-// this warcher watches for changes on the url and appies them
+// this watcher watches for changes on the url and appies them
 watch(
     () => route.params.path,
     (newLocation, oldId) => {
@@ -56,7 +56,8 @@ const getNames = computed(() => {
             key: 0,
             label: '..',
             selectable: true,
-            icon: 'pi pi-fw pi-chevron-up '
+            icon: 'pi pi-fw pi-chevron-up ',
+            type: "levelUp"
         })
     }
 
@@ -78,6 +79,13 @@ const getNames = computed(() => {
             })
         }
     }
+    nodes.dirs.push({
+        key: 0,
+        label: 'Add folder...',
+        selectable: true,
+        icon: 'pi pi-fw pi-plus',
+        type: "createNew"
+    })
     return nodes
 })
 

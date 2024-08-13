@@ -56,7 +56,7 @@ export const useFileStore = defineStore('files', () => {
                 isLoading.value = false
             })
     }
-    const deleteFile = (file) =>{
+    const deleteItem = (file) =>{
         isLoading.value = true
         isErr.value =false
         errMessage.value=""
@@ -86,7 +86,7 @@ export const useFileStore = defineStore('files', () => {
         files, // a list of files in the dir
         filePath, // full location path including api
         load, // trigger navigation
-        deleteFile,
+        deleteItem,
         isRoot, // check if the dir is the root
         getLocation, // return the new path after adding a directory
         isErr, // true if there was an error
