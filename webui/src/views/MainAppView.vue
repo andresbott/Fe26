@@ -50,17 +50,6 @@ const getNames = computed(() => {
         dirs: [],
         files: []
     }
-
-    if (!store.isRoot()) {
-        nodes.dirs.push({
-            key: 0,
-            label: '..',
-            selectable: true,
-            icon: 'pi pi-fw pi-chevron-up ',
-            type: "levelUp"
-        })
-    }
-
     for (const [key, value] of Object.entries(files)) {
         if (value.IsDir) {
             nodes.dirs.push({
@@ -79,13 +68,6 @@ const getNames = computed(() => {
             })
         }
     }
-    nodes.dirs.push({
-        key: 0,
-        label: 'Add folder...',
-        selectable: true,
-        icon: 'pi pi-fw pi-plus',
-        type: "createNew"
-    })
     return nodes
 })
 

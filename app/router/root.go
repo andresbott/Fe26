@@ -88,7 +88,7 @@ func NewAppHandler(cfg AppCfg) (*MyAppHandler, error) {
 		sub.Path("/user/status").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
 
 		// fs
-		sub.PathPrefix("/fs").Methods(http.MethodGet, http.MethodDelete).Handler(fileServer)
+		sub.PathPrefix("/fs").Methods(http.MethodGet, http.MethodDelete, http.MethodPut).Handler(fileServer)
 		sub.PathPrefix("/fs").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
 	}
 

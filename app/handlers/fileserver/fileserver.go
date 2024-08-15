@@ -30,6 +30,8 @@ func (f *fileHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		f.handleGet(w, r)
 	case http.MethodDelete:
 		f.handleDelete(w, r)
+	case http.MethodPut:
+		f.handlePut(w, r)
 	default:
 		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
 	}

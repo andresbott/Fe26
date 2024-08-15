@@ -81,12 +81,41 @@ export const useFileStore = defineStore('files', () => {
             })
     }
 
+    const createDir = (dirName) =>{
+        isLoading.value = true
+        isErr.value =false
+        errMessage.value=""
+        axios
+            .put(path.join(filesEndpoint, getLocation(dirName)))
+            .then((res) => {
+                if (res.status === 200) {
+                    // add new dir to file list
+                    files.value.push({
+                        Name: dirName,
+                        IsDir: true,
+                    })
+                } else {
+                    console.log('err')
+                    console.log(res)
+                    // error?
+                }
+            })
+            .catch((err) => {
+                isErr.value =true
+                errMessage.value=err.message
+            })
+            .finally(() => {
+                isLoading.value = false
+            })
+    }
+
 
     return {
         files, // a list of files in the dir
         filePath, // full location path including api
         load, // trigger navigation
         deleteItem,
+        createDir,
         isRoot, // check if the dir is the root
         getLocation, // return the new path after adding a directory
         isErr, // true if there was an error
