@@ -10,10 +10,10 @@ import Error from '@/views/parts/error.vue'
 import Breadcrumb from 'primevue/breadcrumb'
 import { DateTime } from 'luxon'
 import path from 'path-browserify'
-import { useRoute,useRouter } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
 import Upload from '@/views/parts/upload.vue'
 
-const route = useRoute();
+const route = useRoute()
 const router = useRouter()
 const store = useFileStore()
 
@@ -23,25 +23,22 @@ onMounted(() => {
     store.load(store.getLocation(route.params.path))
 })
 // when a dir is clicked, we change the url
-const click = (dirname ) =>{
+const click = (dirname) => {
     // this joins the vue sub-path "files" with the file system location
     // console.log("on click, push path: "+path.normalize(path.join("/files",store.getLocation(dirname))))
-    router.push(path.normalize(path.join("/files",store.getLocation(dirname))))
+    router.push(path.normalize(path.join('/files', store.getLocation(dirname))))
 }
 
 // this watcher watches for changes on the url and appies them
 watch(
     () => route.params.path,
     (newLocation, oldId) => {
-        store.load(path.normalize(path.join("/",newLocation)))
+        store.load(path.normalize(path.join('/', newLocation)))
     }
 )
 
-
-function timeToUnix(input ){
-    return DateTime
-        .fromISO(input)
-        .toSeconds()
+function timeToUnix(input) {
+    return DateTime.fromISO(input).toSeconds()
 }
 
 const getNames = computed(() => {
@@ -58,13 +55,13 @@ const getNames = computed(() => {
                 selectable: true,
                 icon: 'pi pi-fw pi-folder'
             })
-        }else {
+        } else {
             nodes.files.push({
-                icon:  'pi pi-fw pi-folder',
+                icon: 'pi pi-fw pi-folder',
                 name: value.Name,
-                filePath : path.join(store.filePath,value.Name),
+                filePath: path.join(store.filePath, value.Name),
                 size: value.Size,
-                modTime: timeToUnix(value.ModTime),
+                modTime: timeToUnix(value.ModTime)
             })
         }
     }
@@ -73,55 +70,63 @@ const getNames = computed(() => {
 
 const home = ref({
     icon: 'pi pi-home',
-    label: "Root",
-    command: () =>{
-        router.push(path.normalize("/files/"))
+    label: 'Root',
+    command: () => {
+        router.push(path.normalize('/files/'))
     }
-});
-const breadcrumbItems = computed(()=>{
-    const items = store.getLocation("").split('/').filter(function (el) {
-        return el !== "";
-    });
-    const out = [];
-    let i = 0;
-    let base ="/"
+})
+const breadcrumbItems = computed(() => {
+    const items = store
+        .getLocation('')
+        .split('/')
+        .filter(function (el) {
+            return el !== ''
+        })
+    const out = []
+    let i = 0
+    let base = '/'
     while (i < items.length) {
         base = path.join(base, items[i])
         let p = base
-        out.push( {
-            label: items[i] ,
-            command: () =>{
-                router.push(path.normalize(path.join("/files/",p)))
+        out.push({
+            label: items[i],
+            command: () => {
+                router.push(path.normalize(path.join('/files/', p)))
             }
-        },)
-        i++;
+        })
+        i++
     }
     return out
 })
-
 </script>
 
-
 <template>
-    <Error/>
+    <Error />
     <Sidebar>
         <template v-slot:left>
             <vertical :center-content="false">
                 <template v-slot:header>
-                    <Logo/>
-                    <hr class="space"/>
+                    <Logo />
+                    <hr class="space" />
                 </template>
                 <template v-slot:main>
-                    <directory-list :dirs="getNames.dirs" :select="click"/>
+                    <directory-list :dirs="getNames.dirs" :select="click" />
                 </template>
                 <template v-slot:footer>my footer </template>
             </vertical>
         </template>
         <template v-slot:default>
-            <Breadcrumb :home="home" :model="breadcrumbItems" />
-            <file-list :files="getNames.files"/>
-            <Upload />
+            <vertical>
+                <template v-slot:header>
+                    <Breadcrumb :home="home" :model="breadcrumbItems" />
+                </template>
+                <template v-slot:main>
+                    <file-list :files="getNames.files" />
+                </template>
+                <template v-slot:footer>
+                    <Upload />
+                </template>
+            </vertical>
         </template>
     </Sidebar>
-
 </template>

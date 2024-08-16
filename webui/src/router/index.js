@@ -1,21 +1,21 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user.js'
 
-const appPrefix = "files"
+const appPrefix = 'files'
 const router = createRouter({
     history: createWebHistory(),
     routes: [
         {
             path: '/',
-            redirect: to => {
-                return { path: '/files/'}
-            },
+            redirect: (to) => {
+                return { path: '/files/' }
+            }
         },
         {
             path: '/files',
-            redirect: to => {
-                return { path: '/files/'}
-            },
+            redirect: (to) => {
+                return { path: '/files/' }
+            }
         },
         {
             path: '/files/:path(.*)',
@@ -32,7 +32,7 @@ const router = createRouter({
                 hideFromAuth: true
             },
             component: () => import('@/views/LoginView.vue')
-        },
+        }
     ]
 })
 

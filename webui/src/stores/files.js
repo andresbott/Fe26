@@ -10,8 +10,8 @@ export const useFileStore = defineStore('files', () => {
     const location = ref('/')
     const isLoading = ref(false)
     const isErr = ref(false)
-    const errMessage = ref("")
-    const filePath = ref("")
+    const errMessage = ref('')
+    const filePath = ref('')
 
     const processData = (payload) => {
         if (payload.Items && Array.isArray(payload.Items)) {
@@ -22,20 +22,20 @@ export const useFileStore = defineStore('files', () => {
         }
     }
 
-    const isRoot = () =>{
-        return location.value === "/";
+    const isRoot = () => {
+        return location.value === '/'
     }
-    const getLocation = (dir) =>{
-        return path.normalize(path.join("/",location.value,dir))
+    const getLocation = (dir) => {
+        return path.normalize(path.join('/', location.value, dir))
     }
 
     const load = (dest) => {
         isLoading.value = true
-        isErr.value =false
-        errMessage.value=""
+        isErr.value = false
+        errMessage.value = ''
 
         location.value = path.normalize(dest)
-        filePath.value = filesEndpoint +location.value
+        filePath.value = filesEndpoint + location.value
 
         axios
             .get(path.join(filesEndpoint, dest))
@@ -49,23 +49,23 @@ export const useFileStore = defineStore('files', () => {
                 }
             })
             .catch((err) => {
-                isErr.value =true
-                errMessage.value=err.message
+                isErr.value = true
+                errMessage.value = err.message
             })
             .finally(() => {
                 isLoading.value = false
             })
     }
-    const deleteItem = (file) =>{
+    const deleteItem = (file) => {
         isLoading.value = true
-        isErr.value =false
-        errMessage.value=""
+        isErr.value = false
+        errMessage.value = ''
         axios
             .delete(path.join(filesEndpoint, getLocation(file)))
             .then((res) => {
                 if (res.status === 200) {
                     // remove the file from the files list
-                    files.value = files.value.filter(item => item.Name !== file);
+                    files.value = files.value.filter((item) => item.Name !== file)
                 } else {
                     console.log('err')
                     console.log(res)
@@ -73,18 +73,18 @@ export const useFileStore = defineStore('files', () => {
                 }
             })
             .catch((err) => {
-                isErr.value =true
-                errMessage.value=err.message
+                isErr.value = true
+                errMessage.value = err.message
             })
             .finally(() => {
                 isLoading.value = false
             })
     }
 
-    const createDir = (dirName) =>{
+    const createDir = (dirName) => {
         isLoading.value = true
-        isErr.value =false
-        errMessage.value=""
+        isErr.value = false
+        errMessage.value = ''
         axios
             .put(path.join(filesEndpoint, getLocation(dirName)))
             .then((res) => {
@@ -92,7 +92,7 @@ export const useFileStore = defineStore('files', () => {
                     // add new dir to file list
                     files.value.push({
                         Name: dirName,
-                        IsDir: true,
+                        IsDir: true
                     })
                 } else {
                     console.log('err')
@@ -101,14 +101,13 @@ export const useFileStore = defineStore('files', () => {
                 }
             })
             .catch((err) => {
-                isErr.value =true
-                errMessage.value=err.message
+                isErr.value = true
+                errMessage.value = err.message
             })
             .finally(() => {
                 isLoading.value = false
             })
     }
-
 
     return {
         files, // a list of files in the dir
@@ -122,4 +121,3 @@ export const useFileStore = defineStore('files', () => {
         errMessage // the error message
     }
 })
-
