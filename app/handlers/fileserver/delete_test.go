@@ -43,6 +43,15 @@ func TestDelete(t *testing.T) {
 			notExists:  "/banana",
 			expectCode: http.StatusOK,
 		},
+		{
+			name: "prevent deletion of root",
+			req: func() (*http.Request, error) {
+				req, _ := http.NewRequest("DELETE", "/", nil)
+				return req, nil
+			},
+			notExists:  "/banana",
+			expectCode: http.StatusBadRequest,
+		},
 	}
 
 	for _, tc := range tcs {

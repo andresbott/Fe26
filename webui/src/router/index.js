@@ -1,7 +1,6 @@
 import { createRouter, createWebHistory } from 'vue-router'
 import { useUserStore } from '@/stores/user.js'
 
-const appPrefix = 'files'
 const router = createRouter({
     history: createWebHistory(),
     routes: [

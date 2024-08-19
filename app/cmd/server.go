@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"github.com/andresbott/Fe26/app/config"
+	"github.com/andresbott/Fe26/app/metainfo"
 	"github.com/andresbott/Fe26/app/router"
 	"github.com/andresbott/go-carbon/libs/auth"
 	"github.com/andresbott/go-carbon/libs/http/handlers"
@@ -25,8 +26,8 @@ func runServer(configFile string) error {
 	}
 	l := logzero.DefaultLogger(logzero.GetLogLevel(cfg.Log.Level), logOutput)
 
-	l.Info().Str("version", Version).Str("component", "startup").
-		Msgf("running version %s, build date: %s, commint: %s ", Version, BuildTime, ShaVer)
+	l.Info().Str("version", metainfo.Version).Str("component", "startup").
+		Msgf("running version %s, build date: %s, commint: %s ", metainfo.Version, metainfo.BuildTime, metainfo.ShaVer)
 
 	// print config messages delayed
 	for _, m := range cfg.Msgs {

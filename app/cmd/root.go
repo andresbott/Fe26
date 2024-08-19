@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"github.com/andresbott/Fe26/app/metainfo"
 	"github.com/spf13/cobra"
 	"os"
 	"runtime"
@@ -24,26 +25,16 @@ func newRootCommand() *cobra.Command {
 			return runServer(configFile)
 		},
 	}
-
 	cmd.Flags().StringVarP(&configFile, "config", "c", configFile, "config file")
-
-	// TODO start without subcommand
-
 	cmd.SetFlagErrorFunc(func(cmd *cobra.Command, err error) error {
 		_ = cmd.Help()
 		return nil
 	})
-
 	cmd.AddCommand(
 		versionCmd(),
 	)
-
 	return cmd
 }
-
-var Version = "devel"
-var BuildTime = ""
-var ShaVer = "undefined"
 
 func versionCmd() *cobra.Command {
 	cmd := cobra.Command{
@@ -51,9 +42,9 @@ func versionCmd() *cobra.Command {
 		Short: "version ",
 		Long:  `version long`,
 		Run: func(cmd *cobra.Command, args []string) {
-			fmt.Printf("Version: %s\n", Version)
-			fmt.Printf("Build date: %s\n", BuildTime)
-			fmt.Printf("Commit sha: %s\n", ShaVer)
+			fmt.Printf("Version: %s\n", metainfo.Version)
+			fmt.Printf("Build date: %s\n", metainfo.BuildTime)
+			fmt.Printf("Commit sha: %s\n", metainfo.ShaVer)
 			fmt.Printf("Compiler: %s\n", runtime.Version())
 		},
 	}

@@ -50,7 +50,6 @@ type User struct {
 
 // Default represents the basic set of sensible defaults
 var defaultCfg = AppCfg{
-
 	Server: serverCfg{
 		BindIp: "",
 		Port:   8085,

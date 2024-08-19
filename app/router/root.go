@@ -1,8 +1,8 @@
 package router
 
 import (
-	_ "embed"
 	"github.com/andresbott/Fe26/app/handlers/fileserver"
+	"github.com/andresbott/Fe26/app/metainfo"
 	"github.com/andresbott/Fe26/app/spa"
 	"github.com/andresbott/go-carbon/app/handlrs"
 	"github.com/andresbott/go-carbon/libs/auth"
@@ -24,14 +24,15 @@ func (h *MyAppHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	h.router.ServeHTTP(w, r)
 }
 
-//  go: embed ../handlers/tmpl/loginForm.html
-//var loginForm string
-
 type AppCfg struct {
 	Logger      *zerolog.Logger
 	AuthEnabled bool
 	AuthMngr    *auth.SessionMgr
 	Users       auth.UserLogin
+}
+
+type authMeta struct {
+	AuthEnabled bool `json:"enabled"`
 }
 
 // NewAppHandler generates the main url router handler to be used in the server
@@ -62,35 +63,33 @@ func NewAppHandler(cfg AppCfg) (*MyAppHandler, error) {
 		return nil, err
 	}
 	fileServer := fileserver.FileServer(afero.NewBasePathFs(afero.NewOsFs(), absPath), "/api/v0/fs/")
+
+	// this sub router does NOT enforce authentication
+	apiRoute := r.PathPrefix("/api/v0").Subrouter()
+	apiRoute.Use(func(handler http.Handler) http.Handler {
+		return middleware.JsonErrMiddleware(handler, genericErrorMessage)
+	})
+
+	// add the info endpoint
+	err = infoApi(apiRoute, cfg.AuthEnabled)
+	if err != nil {
+		return nil, err
+	}
+
 	if cfg.AuthEnabled {
-		// this sub router does NOT enforce authentication
-		openSubRoute := r.PathPrefix("/api/v0").Subrouter()
-		openSubRoute.Use(func(handler http.Handler) http.Handler {
-			return middleware.JsonErrMiddleware(handler, genericErrorMessage)
-		})
 		// add users handling to api
-		userApi(openSubRoute, cfg.AuthMngr, cfg.Users)
+		userApi(apiRoute, cfg.AuthMngr, cfg.Users)
 
 		// this sub router does enforce authentication
 		protected := r.PathPrefix("/api/v0").Subrouter()
 		protected.Use(func(handler http.Handler) http.Handler {
 			return middleware.JsonErrMiddleware(handler, genericErrorMessage)
 		}, cfg.AuthMngr.Middleware)
-	} else {
-		sub := r.PathPrefix("/api/v0").Subrouter()
-		sub.Use(func(handler http.Handler) http.Handler {
-			return middleware.JsonErrMiddleware(handler, genericErrorMessage)
-		})
-		// simple User API to let the SPA know it's running without auth
-
-		// STATUS
-		sub.Path("/user/status").Methods(http.MethodGet).Handler(handlrs.AuthDisabledHandler())
-		sub.Path("/user/status").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
-
-		// fs
-		sub.PathPrefix("/fs").Methods(http.MethodGet, http.MethodDelete, http.MethodPut, http.MethodPost).Handler(fileServer)
-		sub.PathPrefix("/fs").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
+		apiRoute = protected
 	}
+
+	apiRoute.PathPrefix("/fs").Methods(http.MethodGet, http.MethodDelete, http.MethodPut, http.MethodPost).Handler(fileServer)
+	apiRoute.PathPrefix("/fs").Handler(handlers.StatusErr(http.StatusMethodNotAllowed))
 
 	// attach spa handler
 	// if you want to serve the spa from the root, pass "/" to the spa handler and the path prefix
@@ -105,6 +104,30 @@ func NewAppHandler(cfg AppCfg) (*MyAppHandler, error) {
 		router: r,
 	}, nil
 }
+
+func infoApi(apiRoute *mux.Router, authEnabled bool) error {
+	data := map[string]any{}
+	data["auth"] = authMeta{AuthEnabled: authEnabled}
+
+	type Info struct {
+		Version   string `json:"version"`
+		BuildTime string `json:"buildtime"`
+		Commit    string `json:"commit"`
+	}
+	data["meta"] = Info{
+		Version:   metainfo.Version,
+		BuildTime: metainfo.BuildTime,
+		Commit:    metainfo.ShaVer,
+	}
+	infoHndl, err := handlers.StaticInfo(data)
+	if err != nil {
+		return err
+	}
+
+	apiRoute.Path("/info").Methods(http.MethodGet).Handler(infoHndl)
+	return nil
+}
+
 func userApi(apiRoute *mux.Router, session *auth.SessionMgr, users auth.UserLogin) {
 
 	//  LOGIN

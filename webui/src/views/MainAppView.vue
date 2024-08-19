@@ -1,26 +1,29 @@
 <script setup>
-import Vertical from '@/components/legos/Vertical.vue'
+import Vertical from '@/components/generic/Vertical.vue'
 import DirectoryList from '@/components/directoryList.vue'
 import FileList from '@/components/fileList.vue'
-import Sidebar from '@/views/parts/sidebar.vue'
+import Sidebar from '@/components/generic/sidebar.vue'
 import Logo from '@/components/Logo.vue'
 import { useFileStore } from '@/stores/files.js'
 import { computed, onMounted, ref, watch } from 'vue'
-import Error from '@/views/parts/error.vue'
+import Error from '@/components/generic/error.vue'
 import Breadcrumb from 'primevue/breadcrumb'
 import { DateTime } from 'luxon'
 import path from 'path-browserify'
 import { useRoute, useRouter } from 'vue-router'
-import Upload from '@/views/parts/upload.vue'
+import Upload from '@/components/upload.vue'
+import { userInfoStore } from '@/stores/info.js'
 
 const route = useRoute()
 const router = useRouter()
 const store = useFileStore()
+const info = userInfoStore()
 
 // on mount load the content based on the navigation path
 onMounted(() => {
     // console.log("on mount, load: "+store.getLocation(route.params.path))
     store.load(store.getLocation(route.params.path))
+    info.load()
 })
 // when a dir is clicked, we change the url
 const click = (dirname) => {
@@ -112,7 +115,10 @@ const breadcrumbItems = computed(() => {
                 <template v-slot:main>
                     <directory-list :dirs="getNames.dirs" :select="click" />
                 </template>
-                <template v-slot:footer>my footer </template>
+                <template v-slot:footer>
+                    <hr class="space" />
+                    <div class="fe26-version">Running <a href="https://github.com/AndresBott/Fe26">Fe26 </a>version: {{ info.version}}</div>
+                 </template>
             </vertical>
         </template>
         <template v-slot:default>
@@ -130,3 +136,15 @@ const breadcrumbItems = computed(() => {
         </template>
     </Sidebar>
 </template>
+<style>
+.fe26-version{
+    font-size: 90%;
+    padding: 0.5rem 2rem 1rem 2rem;
+    color: var(--accent-color);
+}
+.fe26-version a{
+    font-weight: bold;
+    text-decoration: none;
+    color: var(--bg-color-light);
+}
+</style>
