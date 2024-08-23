@@ -2,7 +2,7 @@
 import Vertical from '@/components/generic/Vertical.vue'
 import DirectoryList from '@/components/directoryList.vue'
 import FileList from '@/components/fileList.vue'
-import Sidebar from '@/components/generic/sidebar.vue'
+import Sidebar from '@/components/generic/simpleSidebar.vue'
 import Logo from '@/components/Logo.vue'
 import { useFileStore } from '@/stores/files.js'
 import { computed, onMounted, ref, watch } from 'vue'
@@ -13,6 +13,7 @@ import path from 'path-browserify'
 import { useRoute, useRouter } from 'vue-router'
 import Upload from '@/components/upload.vue'
 import { userInfoStore } from '@/stores/info.js'
+import Button from 'primevue/button'
 
 const route = useRoute()
 const router = useRouter()
@@ -101,12 +102,24 @@ const breadcrumbItems = computed(() => {
     }
     return out
 })
+
+const sidebarOpen = ref(true)
+const hclick = () => {
+    sidebarOpen.value = !sidebarOpen.value
+}
+
+const first = ref('banana')
 </script>
 
 <template>
     <Error />
-    <Sidebar>
-        <template v-slot:left>
+
+    <Sidebar
+        v-model:open="sidebarOpen"
+        :breakpoints="{ 1199: 'medium', 600: 'small' }"
+        :mobileOpen="false"
+    >
+        <template v-slot:menu>
             <vertical :center-content="false">
                 <template v-slot:header>
                     <Logo />
@@ -117,8 +130,12 @@ const breadcrumbItems = computed(() => {
                 </template>
                 <template v-slot:footer>
                     <hr class="space" />
-                    <div class="fe26-version">Running <a href="https://github.com/AndresBott/Fe26">Fe26 </a>version: {{ info.version}}</div>
-                 </template>
+                    <div class="fe26-version">
+                        Running <a href="https://github.com/AndresBott/Fe26">Fe26 </a>version:
+                        {{ info.version }}
+
+                    </div>
+                </template>
             </vertical>
         </template>
         <template v-slot:default>
@@ -136,13 +153,56 @@ const breadcrumbItems = computed(() => {
         </template>
     </Sidebar>
 </template>
-<style>
-.fe26-version{
+<style lang="scss">
+// style the sidebar
+.ss-wrapper {
+    .ss-left {
+        background: var(--bg-color-dark);
+        .p-tree {
+            background: none;
+            width: revert !important;
+            padding: 0;
+            .p-tree-node-content,
+            .p-tree-node-icon,
+            span{
+                color: var(--bg-color-light);
+            }
+            .p-tree-node-content:hover {
+                background: var(--accent-color-dark);
+            }
+            .p-tree-node-content:hover span {
+                color: var(--bg-color-light);
+            }
+            .p-tree-node-content {
+                transition-duration: 0s;
+            }
+            .p-tree-root-children {
+                gap: 0;
+            }
+        }
+    }
+    .ss-main {
+        background: var(--bg-color-light);
+    }
+}
+
+@media (min-width: 900px) {
+    :root {
+        --ss-width: 35%;
+    }
+}
+@media (min-width: 1200px) {
+    :root {
+        --ss-width: 420px;
+    }
+}
+
+.fe26-version {
     font-size: 90%;
     padding: 0.5rem 2rem 1rem 2rem;
     color: var(--accent-color);
 }
-.fe26-version a{
+.fe26-version a {
     font-weight: bold;
     text-decoration: none;
     color: var(--bg-color-light);

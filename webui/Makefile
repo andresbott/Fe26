@@ -16,6 +16,9 @@ build: ## build a production release
 dependencies: ## check unused dependencies
 	@npx npm-check
 
+update: ## check updates and update packages
+	@npm install -g npm-check-updates && \
+     ncu -u
 
 #==========================================================================================
 #  Help

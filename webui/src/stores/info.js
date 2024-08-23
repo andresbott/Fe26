@@ -11,17 +11,17 @@ export const userInfoStore = defineStore('info', () => {
     const commit = ref()
 
     const isLoading = ref(false)
-    const loadErr = ref("")
+    const loadErr = ref('')
 
     const processData = (payload) => {
         console.log(payload)
-        if (payload.meta.version ) {
+        if (payload.meta.version) {
             version.value = payload.meta.version
         }
-        if (payload.meta.buildtime ) {
+        if (payload.meta.buildtime) {
             buildTime.value = payload.meta.buildtime
         }
-        if (payload.meta.commit ) {
+        if (payload.meta.commit) {
             commit.value = payload.meta.commit
         }
     }
@@ -29,7 +29,6 @@ export const userInfoStore = defineStore('info', () => {
     const load = () => {
         isLoading.value = true
         loadErr.value = ''
-
 
         axios
             .get(metaInfoEndpoint)
@@ -39,13 +38,12 @@ export const userInfoStore = defineStore('info', () => {
                 } else {
                     console.log('err')
                     console.log(res)
-                    loadErr.value= err.message
+                    loadErr.value = err.message
                     // error?
                 }
             })
             .catch((err) => {
-                loadErr.value= err.message
-
+                loadErr.value = err.message
             })
             .finally(() => {
                 isLoading.value = false

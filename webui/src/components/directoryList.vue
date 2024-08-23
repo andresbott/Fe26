@@ -128,7 +128,7 @@ function deleteDir() {
         :value="folders"
         @nodeSelect="onNodeSelect"
         selectionMode="single"
-        class="w-full md:w-30rem fe26-tree-list"
+        class="w-full fe26-tree-list"
     >
         <template #default="slotProps">
             <span>{{ slotProps.node.label }}</span>
