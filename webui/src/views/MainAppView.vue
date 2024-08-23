@@ -14,6 +14,7 @@ import { useRoute, useRouter } from 'vue-router'
 import Upload from '@/components/upload.vue'
 import { userInfoStore } from '@/stores/info.js'
 import Button from 'primevue/button'
+import Horizontal from '@/components/generic/horizontal.vue'
 
 const route = useRoute()
 const router = useRouter()
@@ -104,7 +105,7 @@ const breadcrumbItems = computed(() => {
 })
 
 const sidebarOpen = ref(true)
-const hclick = () => {
+const toggleSidebar = () => {
     sidebarOpen.value = !sidebarOpen.value
 }
 
@@ -122,8 +123,11 @@ const first = ref('banana')
         <template v-slot:menu>
             <vertical :center-content="false">
                 <template v-slot:header>
-                    <Logo />
-                    <hr class="space" />
+                    <div class="hide-on-mobile">
+                        <Logo />
+                        <hr class="space" />
+                    </div>
+
                 </template>
                 <template v-slot:main>
                     <directory-list :dirs="getNames.dirs" :select="click" />
@@ -133,7 +137,6 @@ const first = ref('banana')
                     <div class="fe26-version">
                         Running <a href="https://github.com/AndresBott/Fe26">Fe26 </a>version:
                         {{ info.version }}
-
                     </div>
                 </template>
             </vertical>
@@ -141,6 +144,16 @@ const first = ref('banana')
         <template v-slot:default>
             <vertical>
                 <template v-slot:header>
+                    <div class="mobile-header mobile-only">
+                        <horizontal :hide-center="true">
+                            <template v-slot:left>
+                                <Logo />
+                            </template>
+                            <template v-slot:right>
+                                <Button icon="pi pi-bars" text @click="toggleSidebar"> </Button>
+                            </template>
+                        </horizontal>
+                    </div>
                     <Breadcrumb :home="home" :model="breadcrumbItems" />
                 </template>
                 <template v-slot:main>
@@ -156,6 +169,16 @@ const first = ref('banana')
 <style lang="scss">
 // style the sidebar
 .ss-wrapper {
+    &.mobile{
+        .hide-on-mobile{
+            margin-top: 1.5rem;
+            >*{
+                display: none;
+            }
+
+
+        }
+    }
     .ss-left {
         background: var(--bg-color-dark);
         .p-tree {
@@ -180,12 +203,31 @@ const first = ref('banana')
                 gap: 0;
             }
         }
+
     }
     .ss-main {
         background: var(--bg-color-light);
     }
 }
-
+.mobile-header{
+    background: var(--bg-color-dark);
+    .fe26-logo-container{
+        text-align: left;
+        display: inline-block;
+    }
+    button.p-button{
+        color: var(--bg-color-light);
+        &:hover{
+            background: none;
+            color: var(--bg-color-light);
+        }
+    }
+}
+@media (min-width: 451px) {
+    .mobile-only{
+        display: none;
+    }
+}
 @media (min-width: 900px) {
     :root {
         --ss-width: 35%;

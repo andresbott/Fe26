@@ -41,6 +41,7 @@ defineProps({
 }
 .c-vertical > .c-main {
     grid-area: content;
+    overflow: auto;
 }
 .c-vertical > .c-main.v-center {
     display: grid;
