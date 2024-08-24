@@ -58,7 +58,7 @@ func NewAppHandler(cfg AppCfg) (*MyAppHandler, error) {
 	genericErrorMessage := false
 
 	// todo read the path from config
-	absPath, err := filepath.Abs("./test")
+	absPath, err := filepath.Abs("./")
 	if err != nil {
 		return nil, err
 	}

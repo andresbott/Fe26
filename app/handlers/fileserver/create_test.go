@@ -92,7 +92,9 @@ func TestCreateFile(t *testing.T) {
 					fdata: []byte("my content "),
 				}
 				buf, contentType, err := filesBuf(file)
-
+				if err != nil {
+					return nil, err
+				}
 				req, err := http.NewRequest("POST", "/text/plain/myDir", buf)
 				if err != nil {
 					return nil, err

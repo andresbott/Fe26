@@ -130,7 +130,7 @@ type dirContent struct {
 
 func decodeResp(in map[string]any) (dirContent, error) {
 	c := dirContent{}
-	for k, _ := range in {
+	for k := range in {
 		if k == "Items" {
 			for _, fileEntry := range in["Items"].([]any) {
 				data := fileEntry.(map[string]any)

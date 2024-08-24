@@ -44,7 +44,7 @@ document.addEventListener('dragleave', (event) => {
             <FileUpload
                 name="demo[]"
                 :url="store.filePath"
-                accept="*"
+                accept="image/*,video/*,audio/*,.pdf,.doc,.docx,.xls,.xlsx,.txt,*"
                 :multiple="true"
                 @upload="onAdvancedUpload($event)"
                 :auto="true"

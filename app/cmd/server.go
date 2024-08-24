@@ -12,6 +12,7 @@ import (
 	"github.com/andresbott/go-carbon/libs/user"
 )
 
+//nolint:gocognit // pending refactoring
 func runServer(configFile string) error {
 
 	cfg, err := config.Get(configFile)

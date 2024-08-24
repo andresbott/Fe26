@@ -6,7 +6,7 @@ replace github.com/andresbott/go-carbon => ../carbon
 
 require (
 	github.com/rs/zerolog v1.33.0
-	github.com/spf13/afero v1.11.0 // indirect
+	github.com/spf13/afero v1.11.0
 	github.com/spf13/cobra v1.8.0
 )
 

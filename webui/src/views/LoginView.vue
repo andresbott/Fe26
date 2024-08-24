@@ -1,7 +1,7 @@
 <script setup>
-import Vertical from '@/components/legos/Vertical.vue'
-import Horizontal from '@/components/legos/horizontal.vue'
-import UserLogin from '@/components/UserLogin.vue'
+import Vertical from '@/components/generic/Vertical.vue'
+import Horizontal from '@/components/generic/horizontal.vue'
+import UserLogin from '@/components/user/UserLogin.vue'
 </script>
 
 <template>

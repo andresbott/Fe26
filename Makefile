@@ -7,6 +7,7 @@ default: help
 #==========================================================================================
 ##@ Testing
 #==========================================================================================
+.PHONY: test
 test: ## run go tests
 	@go test ./... -cover
 
@@ -31,7 +32,7 @@ verify: package-ui test lint benchmark license-check ## run all tests
 run: ## start the GO service
 	@CARBON_LOG_LEVEL="debug" go run main.go
 
-run-ui: package-ui serve## build the UI and start the GO service
+run-ui: package-ui run## build the UI and start the GO service
 
 #==========================================================================================
 ##@ Building
@@ -44,7 +45,6 @@ package-ui: build-ui ## build the web and copy into Go pacakge
 build-ui:
 	@cd webui && \
 	npm install && \
-	export VITE_BASE="/ui" && \
 	npm run build
 
 build: package-ui ## use goreleaser to build
@@ -66,14 +66,14 @@ swagger-editor: ## run swagger editor in docker
 ##@   Docker
 #==========================================================================================
 docker-base: ## build the base docker image used to build the project
-	@docker build ./ -t carbon-builder:latest -f zarf/Docker/base.Dockerfile
+	@docker build ./ -t fe26-builder:latest -f zarf/Docker/base.Dockerfile
 
 docker-test: docker-base ## run tests in docker
 	@docker build ./ -f zarf/Docker/test.Dockerfile
 
 docker-build: docker-base ## build a snapshot release within docker
-	@docker build ./ -t carbon-build:${COMMIT_SHA_SHORT} -f zarf/Docker/build.Dockerfile
-	@./zarf/Docker/dockerCP.sh carbon-build:${COMMIT_SHA_SHORT} /project/dist/ ${PWD_DIR}
+	@docker build ./ -t fe26-build:${COMMIT_SHA_SHORT} -f zarf/Docker/build.Dockerfile
+	@./zarf/Docker/dockerCP.sh fe26-build:${COMMIT_SHA_SHORT} /project/dist/ ${PWD_DIR}
 
 .PHONY: check-git-clean
 check-git-clean: # check if git repo is clen
@@ -100,9 +100,9 @@ release: check_env check-branch check-git-clean docker-test ## release a new ver
 	@git tag -a $(version) -m "Release version: $(version)"
 	@git push --delete origin $(version) || true
 	@git push origin $(version) || true
-	@GITHUB_TOKEN=${GITHUB_TOKEN} docker build -t carbon-release:${COMMIT_SHA_SHORT} --secret id=GITHUB_TOKEN ./ -f zarf/Docker/release.Dockerfile
+	@GITHUB_TOKEN=${GITHUB_TOKEN} docker build -t fe26-release:${COMMIT_SHA_SHORT} --secret id=GITHUB_TOKEN ./ -f zarf/Docker/release.Dockerfile
 	@ echo "using goreleaser config in zarf/.goreleaser-all.yaml"
-	@./zarf/Docker/dockerCP.sh carbon-build:${COMMIT_SHA_SHORT} /project/dist/ ${PWD_DIR}
+	@./zarf/Docker/dockerCP.sh fe26-build:${COMMIT_SHA_SHORT} /project/dist/ ${PWD_DIR}
 
 clean: ## clean build env
 	@rm -rf dist

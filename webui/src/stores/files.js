@@ -2,15 +2,15 @@ import { defineStore } from 'pinia'
 import axios from 'axios'
 import path from 'path-browserify'
 import { ref } from 'vue'
+import { useErrorStore } from '@/stores/error.js'
 
 const filesEndpoint = import.meta.env.VITE_SERVER_URL_V0 + '/fs'
+const errStore = useErrorStore()
 
 export const useFileStore = defineStore('files', () => {
     const files = ref([])
     const location = ref('/')
     const isLoading = ref(false)
-    const isErr = ref(false)
-    const errMessage = ref('')
     const filePath = ref('')
 
     const processData = (payload) => {
@@ -31,26 +31,29 @@ export const useFileStore = defineStore('files', () => {
 
     const load = (dest) => {
         isLoading.value = true
-        isErr.value = false
-        errMessage.value = ''
-
+        errStore.clear()
         location.value = path.normalize(dest)
         filePath.value = filesEndpoint + location.value
-
+        files.value = []
         axios
             .get(path.join(filesEndpoint, dest))
             .then((res) => {
                 if (res.status === 200) {
                     processData(res.data)
                 } else {
-                    console.log('err')
-                    console.log(res)
-                    // error?
+                    errStore.set(false,'unexpected response code',"files_axios")
                 }
             })
             .catch((err) => {
-                isErr.value = true
-                errMessage.value = err.message
+                switch (err.response.status) {
+                    case 404:{
+                        errStore.set(false,err.message)
+                        break
+                    }
+                    default:{
+                        errStore.set(true,err.message)
+                    }
+                }
             })
             .finally(() => {
                 isLoading.value = false
@@ -58,8 +61,7 @@ export const useFileStore = defineStore('files', () => {
     }
     const deleteItem = (file) => {
         isLoading.value = true
-        isErr.value = false
-        errMessage.value = ''
+        errStore.clear()
         axios
             .delete(path.join(filesEndpoint, getLocation(file)))
             .then((res) => {
@@ -67,14 +69,19 @@ export const useFileStore = defineStore('files', () => {
                     // remove the file from the files list
                     files.value = files.value.filter((item) => item.Name !== file)
                 } else {
-                    console.log('err')
-                    console.log(res)
-                    // error?
+                    errStore.set(false,'unexpected response code',"files_axios")
                 }
             })
             .catch((err) => {
-                isErr.value = true
-                errMessage.value = err.message
+                switch (err.response.status) {
+                    case 404:{
+                        errStore.set(false,err.message)
+                        break
+                    }
+                    default:{
+                        errStore.set(true,err.message)
+                    }
+                }
             })
             .finally(() => {
                 isLoading.value = false
@@ -83,8 +90,7 @@ export const useFileStore = defineStore('files', () => {
 
     const createDir = (dirName) => {
         isLoading.value = true
-        isErr.value = false
-        errMessage.value = ''
+        errStore.clear()
         axios
             .put(path.join(filesEndpoint, getLocation(dirName)))
             .then((res) => {
@@ -95,14 +101,19 @@ export const useFileStore = defineStore('files', () => {
                         IsDir: true
                     })
                 } else {
-                    console.log('err')
-                    console.log(res)
-                    // error?
+                    errStore.set(false,'unexpected response code',"files_axios")
                 }
             })
             .catch((err) => {
-                isErr.value = true
-                errMessage.value = err.message
+                switch (err.response.status) {
+                    case 404:{
+                        errStore.set(false,err.message)
+                        break
+                    }
+                    default:{
+                        errStore.set(true,err.message)
+                    }
+                }
             })
             .finally(() => {
                 isLoading.value = false
@@ -117,7 +128,5 @@ export const useFileStore = defineStore('files', () => {
         createDir,
         isRoot, // check if the dir is the root
         getLocation, // return the new path after adding a directory
-        isErr, // true if there was an error
-        errMessage // the error message
     }
 })

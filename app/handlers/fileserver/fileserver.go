@@ -151,8 +151,11 @@ func dirList(w http.ResponseWriter, r *http.Request, f http.File) {
 		http.Error(w, "Error marshaling the payload", http.StatusInternalServerError)
 		return
 	}
-	w.Write(jsonData)
-
+	_, err = w.Write(jsonData)
+	if err != nil {
+		http.Error(w, "Error writing response", http.StatusInternalServerError)
+		return
+	}
 }
 
 // localRedirect gives a Moved Permanently response.

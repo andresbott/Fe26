@@ -12,7 +12,7 @@ import { computed, onBeforeMount, onMounted } from 'vue'
 import { ref } from 'vue'
 import { useUserStore } from '@/stores/user.js'
 import router from '@/router/index.js'
-import LoadingScreen from '@/components/loadingScreen.vue'
+import LoadingScreen from '@/components/generic/loadingScreen.vue'
 
 const user = useUserStore()
 
