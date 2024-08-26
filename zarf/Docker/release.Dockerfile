@@ -1,4 +1,4 @@
-FROM carbon-builder:latest
+FROM fe26-builder:latest
 
 WORKDIR /project
 COPY . .
