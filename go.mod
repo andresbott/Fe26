@@ -2,19 +2,14 @@ module github.com/andresbott/Fe26
 
 go 1.22
 
-replace github.com/andresbott/go-carbon => ../carbon
-
 require (
-	github.com/rs/zerolog v1.33.0
-	github.com/spf13/afero v1.11.0
-	github.com/spf13/cobra v1.8.0
-)
-
-require (
-	github.com/andresbott/go-carbon v0.0.0-00010101000000-000000000000
+	github.com/andresbott/go-carbon v0.1.0
 	github.com/davecgh/go-spew v1.1.2-0.20180830191138-d8f796af33cc
 	github.com/google/go-cmp v0.6.0
 	github.com/gorilla/mux v1.8.1
+	github.com/rs/zerolog v1.33.0
+	github.com/spf13/afero v1.11.0
+	github.com/spf13/cobra v1.8.0
 )
 
 require (

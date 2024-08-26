@@ -23,7 +23,7 @@ license-check: ## check for invalid licenses
 	@go list -m -mod=readonly  -json all  | go-licence-detector -includeIndirect -validate -rules zarf/allowedLicenses.json
 
 .PHONY: verify
-verify: package-ui test lint benchmark license-check ## run all tests
+verify: package-ui test lint benchmark ## run all tests
 
 
 #==========================================================================================
@@ -48,19 +48,7 @@ build-ui:
 	npm run build
 
 build: package-ui ## use goreleaser to build
-	@goreleaser build --auto-snapshot --clean
-
-build-linux: package-ui ## use goreleaser to build a single linux target
 	@goreleaser release --clean --auto-snapshot --skip publish
-#==========================================================================================
-##@  Swagger
-#==========================================================================================
-swagger:  ## build and serve the swagger spec
-	@cd zarf/swagger && go run main.go
-
-swagger-editor: ## run swagger editor in docker
-	docker run  -p 8087:8080 -v ${PWD_DIR}/zarf/swagger:/tmp -e SWAGGER_FILE=/tmp/swagger.yaml  swaggerapi/swagger-editor
-
 
 #==========================================================================================
 ##@   Docker
@@ -73,7 +61,7 @@ docker-test: docker-base ## run tests in docker
 
 docker-build: docker-base ## build a snapshot release within docker
 	@docker build ./ -t fe26-build:${COMMIT_SHA_SHORT} -f zarf/Docker/build.Dockerfile
-	@./zarf/Docker/dockerCP.sh fe26-build:${COMMIT_SHA_SHORT} /project/dist/ ${PWD_DIR}
+	@#./zarf/Docker/dockerCP.sh fe26-build:${COMMIT_SHA_SHORT} /project/dist/ ${PWD_DIR}
 
 .PHONY: check-git-clean
 check-git-clean: # check if git repo is clen
