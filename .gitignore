@@ -19,6 +19,9 @@ dist/
 # secrets
 secret
 
+# test directory
+test
+
 # SPA
 app/spa/files/ui/*
 !app/spa/files/ui/.gitkeep
