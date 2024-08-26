@@ -16,6 +16,9 @@
 # build output
 dist/
 
+# secrets
+secret
+
 # SPA
 app/spa/files/ui/*
 !app/spa/files/ui/.gitkeep
