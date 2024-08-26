@@ -60,8 +60,8 @@ docker-test: docker-base ## run tests in docker
 	@docker build ./ -f zarf/Docker/test.Dockerfile
 
 docker-build: docker-base ## build a snapshot release within docker
-	@docker build ./ -t fe26-build:${COMMIT_SHA_SHORT} -f zarf/Docker/build.Dockerfile
-	@#./zarf/Docker/dockerCP.sh fe26-build:${COMMIT_SHA_SHORT} /project/dist/ ${PWD_DIR}
+	@docker build ./ -t fe26-build:${COMMIT_SHA_SHORT} -t fe26-build:latest -f zarf/Docker/build.Dockerfile
+	@./zarf/Docker/dockerCP.sh fe26-build:${COMMIT_SHA_SHORT} /project/dist/ ${PWD_DIR}
 
 .PHONY: check-git-clean
 check-git-clean: # check if git repo is clen
