@@ -81,7 +81,7 @@ ifndef GITHUB_TOKEN
 endif
 	@[ "${version}" ] || ( echo ">> version is not set, usage: make release version=\"v1.2.3\" "; exit 1 )
 
-release: check_env check-branch check-git-clean docker-test ## release a new version
+release: check_env check-branch check-git-clean docker-test docker-build ## build an release a new version
 	@git diff --quiet || ( echo 'git is in dirty state' ; exit 1 )
 	@[ "${version}" ] || ( echo ">> version is not set, usage: make release version=\"v1.2.3\" "; exit 1 )
 	@git tag -d $(version) || true
@@ -89,8 +89,6 @@ release: check_env check-branch check-git-clean docker-test ## release a new ver
 	@git push --delete origin $(version) || true
 	@git push origin $(version) || true
 	@GITHUB_TOKEN=${GITHUB_TOKEN} docker build -t fe26-release:${COMMIT_SHA_SHORT} --secret id=GITHUB_TOKEN ./ -f zarf/Docker/release.Dockerfile
-	@ echo "using goreleaser config in zarf/.goreleaser-all.yaml"
-	@./zarf/Docker/dockerCP.sh fe26-build:${COMMIT_SHA_SHORT} /project/dist/ ${PWD_DIR}
 
 clean: ## clean build env
 	@rm -rf dist
