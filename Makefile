@@ -23,7 +23,7 @@ license-check: ## check for invalid licenses
 	@go list -m -mod=readonly  -json all  | go-licence-detector -includeIndirect -validate -rules zarf/allowedLicenses.json
 
 .PHONY: verify
-verify: package-ui test lint benchmark ## run all tests
+verify: package-ui test lint benchmark license-check## run all tests
 
 
 #==========================================================================================
